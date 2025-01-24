@@ -1,16 +1,19 @@
 /**
  * App.js
  * App functionality and display
- * Note: API limitations include no future matches and only past home games
- * @version 2025.01.22
+ * Note: Free API limitations include no future matches and only past home games
+ * @version 2025.01.23
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 
 const SportsMusicApp = () => {
+
     const [teamSearchResult, setTeamSearchResult] = useState(null);
     const [teamName, setTeamName] = useState(''); // Input for team name search
     const [teamId, setTeamId] = useState(''); // Team ID number
     const [pastMatchInfo, setPastMatchInfo] = useState([]); // Past home games for selected team
+    const [matchInfo, setMatchInfo] = useState([]); // Future games for selected team
+    const apiKey = `${process.env.SPORTS_DB_API_KEY}`;
 
     // Search for team by name
     const handleTeamSearch = () => {
@@ -31,7 +34,7 @@ const SportsMusicApp = () => {
             .catch(error => console.error('Error searching for team:', error));
     };
 
-    // Fetch past matches
+    // Fetch past matches when team id changes
     const handleFindPastMatches = (id) => {
         if (id) {
             console.log('Fetching past matches for team ID:', id);
@@ -45,10 +48,27 @@ const SportsMusicApp = () => {
         }
     };
 
-    // Run handleFindPastMatches when teamId changes
+    // Fetch upcoming matches when teamId changes
+    const handleFindUpcomingMatches = (id) => {
+        if (id) {
+            console.log('Fetching matches for team ID:', id); // Debugging line to check if the correct ID is being passed
+            fetch(`https://www.thesportsdb.com/api/v1/json/3/eventsnext.php?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Upcoming Matches:', data); // Log the match data
+                    setMatchInfo(data.events || []); // Store the match data in state
+                })
+                .catch(error => console.error('Error fetching match data:', error));
+        } else {
+            console.log('No team ID to fetch matches for');
+        }
+    };
+
+    // Find matches when teamId changes
     useEffect(() => {
         if (teamId) {
             handleFindPastMatches(teamId); // Fetch past matches
+            handleFindUpcomingMatches(teamId); // Fetch upcoming matches
         }
     }, [teamId]);
 
@@ -104,6 +124,22 @@ const SportsMusicApp = () => {
                 </ul>
             ) : (
                 <p>No past matches available</p>
+            )}
+            {/* Display upcoming matches */}
+            <h2>Upcoming Matches</h2>
+            {matchInfo.length > 0 ? (
+                <ul>
+                    {matchInfo.map((match, index) => (
+                        <li key={index}>
+                            <p>{match.strEvent}</p>
+                            <p>{match.strDate} - {match.strTime}</p>
+                            <p>{match.strHomeTeam} vs {match.strAwayTeam}</p>
+                            <p>League: {match.strLeague}</p>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No upcoming matches</p>
             )}
         </div>
     );
