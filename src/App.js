@@ -2,9 +2,10 @@
  * App.js
  * App functionality and display
  * Note: Free API limitations include no future matches and only past home games
- * @version 2025.01.23
+ * @version 2025.01.24
  */
 import React, { useState, useEffect} from 'react';
+import { format, toZonedTime } from 'date-fns-tz';
 
 const SportsMusicApp = () => {
 
@@ -13,12 +14,12 @@ const SportsMusicApp = () => {
     const [teamId, setTeamId] = useState(''); // Team ID number
     const [pastMatchInfo, setPastMatchInfo] = useState([]); // Past home games for selected team
     const [matchInfo, setMatchInfo] = useState([]); // Future games for selected team
-    const apiKey = `${process.env.SPORTS_DB_API_KEY}`;
+    const apiKey = `${process.env.REACT_APP_SPORTS_DB_API_KEY}`;
 
     // Search for team by name
     const handleTeamSearch = () => {
         console.clear();
-        fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${teamName}`)
+        fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/searchteams.php?t=${teamName}`)
             .then(response => response.json())
             .then(data => {
                 console.log('API Response:', data);
@@ -37,8 +38,7 @@ const SportsMusicApp = () => {
     // Fetch past matches when team id changes
     const handleFindPastMatches = (id) => {
         if (id) {
-            console.log('Fetching past matches for team ID:', id);
-            fetch(`https://www.thesportsdb.com/api/v1/json/3/eventslast.php?id=${id}`)
+            fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/eventslast.php?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Past Matches:', data);
@@ -51,8 +51,7 @@ const SportsMusicApp = () => {
     // Fetch upcoming matches when teamId changes
     const handleFindUpcomingMatches = (id) => {
         if (id) {
-            console.log('Fetching matches for team ID:', id); // Debugging line to check if the correct ID is being passed
-            fetch(`https://www.thesportsdb.com/api/v1/json/3/eventsnext.php?id=${id}`)
+            fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/eventsnext.php?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Upcoming Matches:', data); // Log the match data
@@ -62,6 +61,17 @@ const SportsMusicApp = () => {
         } else {
             console.log('No team ID to fetch matches for');
         }
+    };
+
+    const convertTime = (utcTimestamp) => {
+        if (!utcTimestamp)
+        {
+            return 'Error fetching time';
+        }
+        const timeZone = 'America/Los_Angeles';
+        const utcDate = new Date(`${utcTimestamp}Z`);
+        const zonedTime = toZonedTime(utcDate, timeZone);
+        return format(zonedTime, 'MMMM dd, yyyy, hh:mm a zzz', { timeZone });
     };
 
     // Find matches when teamId changes
@@ -116,7 +126,7 @@ const SportsMusicApp = () => {
                     {pastMatchInfo.map((match, index) => (
                         <li key={index}>
                             <p>{match.strEvent}</p>
-                            <p>{match.dateEventLocal} ({match.strTimeLocal})</p>
+                            <p>{convertTime(match.strTimestamp)}</p>
                             <p>Venue: {match.strVenue}</p>
                             <p>Score: {match.intHomeScore} - {match.intAwayScore}</p>
                         </li>
@@ -132,9 +142,7 @@ const SportsMusicApp = () => {
                     {matchInfo.map((match, index) => (
                         <li key={index}>
                             <p>{match.strEvent}</p>
-                            <p>{match.strDate} - {match.strTime}</p>
-                            <p>{match.strHomeTeam} vs {match.strAwayTeam}</p>
-                            <p>League: {match.strLeague}</p>
+                            <p>{convertTime(match.strTimestamp)}</p>
                         </li>
                     ))}
                 </ul>
