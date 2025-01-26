@@ -1,19 +1,20 @@
 /**
  * App.js
  * App functionality and display
- * Note: Free API limitations include no future matches and only past home games
- * @version 2025.01.24
+ * Note: Free API limitations include no future matches and only past games at home
+ * @version 2025.01.25
  */
 import React, { useState, useEffect} from 'react';
 import { format, toZonedTime } from 'date-fns-tz';
 
 const SportsMusicApp = () => {
 
-    const [teamSearchResult, setTeamSearchResult] = useState(null);
+    const [teamSearchResult, setTeamSearchResult] = useState(null); // The team searched for
     const [teamName, setTeamName] = useState(''); // Input for team name search
     const [teamId, setTeamId] = useState(''); // Team ID number
     const [pastMatchInfo, setPastMatchInfo] = useState([]); // Past home games for selected team
     const [matchInfo, setMatchInfo] = useState([]); // Future games for selected team
+    const [timeZone, setTimeZone] = useState('America/Los_Angeles');
     const apiKey = `${process.env.REACT_APP_SPORTS_DB_API_KEY}`;
 
     // Search for team by name
@@ -63,12 +64,12 @@ const SportsMusicApp = () => {
         }
     };
 
+    // Convert UTC time to PST
     const convertTime = (utcTimestamp) => {
         if (!utcTimestamp)
         {
             return 'Error fetching time';
         }
-        const timeZone = 'America/Los_Angeles';
         const utcDate = new Date(`${utcTimestamp}Z`);
         const zonedTime = toZonedTime(utcDate, timeZone);
         return format(zonedTime, 'MMMM dd, yyyy, hh:mm a zzz', { timeZone });
@@ -81,6 +82,16 @@ const SportsMusicApp = () => {
             handleFindUpcomingMatches(teamId); // Fetch upcoming matches
         }
     }, [teamId]);
+
+    // Change time zone from PST to EST or vice versa
+    const handleTimeZoneChange = () => {
+        if(timeZone === 'America/Los_Angeles') {
+            setTimeZone('America/New_York');
+        }
+        else {
+            setTimeZone('America/Los_Angeles');
+        }
+    };
 
     // Handles the enter key for the team search bar
     const handleKeyDown = (e) => {
@@ -102,7 +113,6 @@ const SportsMusicApp = () => {
                 />
                 <button onClick={handleTeamSearch}>Search</button>
             </div>
-
             <h2>Team Search Result</h2>
             {teamSearchResult ? (
                 <div>
@@ -120,6 +130,7 @@ const SportsMusicApp = () => {
             ) : (
                 <p>No team found</p>
             )}
+            <button onClick={handleTimeZoneChange}>Change time zone</button>
             <h2>Past Home Matches</h2>
             {pastMatchInfo.length > 0 ? (
                 <ul>
@@ -143,6 +154,7 @@ const SportsMusicApp = () => {
                         <li key={index}>
                             <p>{match.strEvent}</p>
                             <p>{convertTime(match.strTimestamp)}</p>
+                            <p>Venue: {match.strVenue}</p>
                         </li>
                     ))}
                 </ul>
