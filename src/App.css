@@ -1,5 +1,52 @@
 /**
  * App.css
  * Controls look of App.js
- * @version 2025.01.22
+ * @version 2025.01.31
  */
+.app {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.team-search {
+    margin-bottom: 20px;
+}
+
+.team-search input {
+    padding: 8px;
+    margin-right: 10px;
+}
+
+.team-search button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.team-search button:hover {
+    background-color: #0056b3;
+}
+
+.team-details {
+    margin-bottom: 20px;
+}
+
+.match-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.match-list li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.error {
+    color: red;
+}
