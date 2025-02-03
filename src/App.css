@@ -1,13 +1,17 @@
 /**
  * App.css
  * Controls look of App.js
- * @version 2025.01.31
+ * @version 2025.02.03
  */
 .app {
     font-family: Arial, sans-serif;
     padding: 20px;
-    max-width: 800px;
     margin: 0 auto;
+    background-color: #ffffff;
+    color: #000000;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .team-search {
@@ -49,4 +53,71 @@
 
 .error {
     color: red;
+}
+
+.read-more-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+.read-more-button:hover {
+    text-decoration: underline;
+}
+
+/* Dark Mode Styles */
+.app.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.dark-mode-toggle:hover {
+    background-color: #0056b3;
+}
+
+/* Dark Mode Styles for Components */
+.dark-mode .team-details,
+.dark-mode .match-list li,
+.dark-mode .team-search,
+.dark-mode .player-roster {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333;
+}
+
+.dark-mode .team-search input,
+.dark-mode .team-search button {
+    background-color: #333;
+    color: #ffffff;
+    border: 1px solid #555;
+}
+
+.dark-mode .team-search button:hover {
+    background-color: #555;
+}
+
+.dark-mode .read-more-button {
+    color: #1e90ff;
+}
+
+.dark-mode .read-more-button:hover {
+    color: #00bfff;
 }
