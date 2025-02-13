@@ -1,9 +1,10 @@
 /**
  * TeamSearch.js
  * Search for teams
- * @version 2025.01.31
+ * @version 2025.02.10
  */
 import React, { useState } from 'react';
+import { TextField, Button, Box } from '@mui/material';
 
 const TeamSearch = ({ onSearch }) => {
     const [teamName, setTeamName] = useState('');
@@ -15,17 +16,19 @@ const TeamSearch = ({ onSearch }) => {
     };
 
     return (
-        <div className="team-search">
-            <label>Enter Team Name: </label>
-            <input
-                type="text"
+        <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+            <TextField
+                label="Enter Team Name"
+                variant="outlined"
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="e.g., New York Yankees"
+                fullWidth
             />
-            <button onClick={() => onSearch(teamName)}>Search</button>
-        </div>
+            <Button variant="contained" onClick={() => onSearch(teamName)}>
+                Search
+            </Button>
+        </Box>
     );
 };
 

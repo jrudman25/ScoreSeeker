@@ -1,31 +1,42 @@
 /**
  * MatchList.js
  * Lists a team's matches
- * @version 2025.01.31
+ * @version 2025.02.10
  */
 import React from 'react';
+import { Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
 
 const MatchList = ({ title, matches, convertTime }) => {
     return (
-        <div className="match-list">
-            <h2>{title}</h2>
+        <Paper sx={{ p: 3, mb: 4 }}>
+            <Typography variant="h5" component="h2" gutterBottom>
+                {title}
+            </Typography>
             {matches.length > 0 ? (
-                <ul>
+                <List>
                     {matches.map((match, index) => (
-                        <li key={index}>
-                            <p>{match.strEvent}</p>
-                            <p>{convertTime(match.strTimestamp)}</p>
-                            <p>Venue: {match.strVenue}</p>
-                            {match.intHomeScore !== undefined && (
-                                <p>Score: {match.intHomeScore} - {match.intAwayScore}</p>
-                            )}
-                        </li>
+                        <ListItem key={index} divider>
+                            <ListItemText
+                                primary={match.strEvent}
+                                secondary={
+                                    <>
+                                        <Typography variant="body2">{convertTime(match.strTimestamp)}</Typography>
+                                        <Typography variant="body2">Venue: {match.strVenue}</Typography>
+                                        {match.intHomeScore !== undefined && (
+                                            <Typography variant="body2">
+                                                Score: {match.intHomeScore} - {match.intAwayScore}
+                                            </Typography>
+                                        )}
+                                     </>
+                                }
+                            />
+                        </ListItem>
                     ))}
-                </ul>
+                </List>
             ) : (
-                <p>No matches available</p>
+                <Typography variant="body1">No matches available</Typography>
             )}
-        </div>
+        </Paper>
     );
 };
 
