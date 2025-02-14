@@ -1,11 +1,9 @@
-# RhythmicReplay
-## Turning sports data into sound
+# ScoreSeeker
+## A sports data app
 #### Created by Jordan Rudman
 
-This app was made using create-react-app
+This app was made using create-react-app.
 
-Designed with Figma and Canva.
-
-Created using React and TheSportsDB API.
+Created using React, MUI, Tone.js, and TheSportsDB API.
 
 Managed with Node, Webpack, ESLint, and Babel.

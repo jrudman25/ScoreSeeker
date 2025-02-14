@@ -2,7 +2,7 @@
  * App.js
  * App functionality and display
  * Note: Free API limitations include no future matches and only past games at home
- * @version 2025.02.10
+ * @version 2025.02.13
  */
 import React, { useState, useEffect } from 'react';
 import { format, toZonedTime } from 'date-fns-tz';
@@ -58,7 +58,9 @@ const SportsMusicApp = () => {
 
     // Convert UTC time to local time
     const convertTime = (utcTimestamp) => {
-        if (!utcTimestamp) return 'Time not available';
+        if (!utcTimestamp) {
+            return 'Time not available';
+        }
         const utcDate = new Date(`${utcTimestamp}Z`);
         const zonedTime = toZonedTime(utcDate, timeZone);
         return format(zonedTime, 'MMMM dd, yyyy, hh:mm a zzz', { timeZone });
@@ -104,7 +106,7 @@ const SportsMusicApp = () => {
                     {darkMode ? 'Light Mode' : 'Dark Mode'}
                 </Button>
                 <Typography variant="h2" component="h1" gutterBottom>
-                    RhythmicReplay
+                    ScoreSeeker
                 </Typography>
                 <TeamSearch onSearch={handleTeamSearch} />
                 {loading && <CircularProgress />}
@@ -124,11 +126,13 @@ const SportsMusicApp = () => {
                     title="Past Matches"
                     matches={pastMatchInfo}
                     convertTime={convertTime}
+                    darkMode={darkMode}
                 />
                 <MatchList
                     title="Upcoming Matches"
                     matches={upcomingMatchInfo}
                     convertTime={convertTime}
+                    darkMode={darkMode}
                 />
             </Container>
         </ThemeProvider>
