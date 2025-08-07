@@ -15,7 +15,9 @@ const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
     };
 
     const truncateDescription = (text, maxLength) => {
-        if (text.length <= maxLength) return text;
+        if (text.length <= maxLength) {
+            return text;
+        }
         return text.slice(0, maxLength) + '...';
     };
 
