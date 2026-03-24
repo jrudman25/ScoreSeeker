@@ -8,7 +8,7 @@ const path = require('path');
 const https = require('https');
 
 // For paid tier, use .env or hardcode if testing
-const API_KEY = process.env.REACT_APP_SPORTS_DB_API_KEY || '871003';
+const API_KEY = process.env.SPORTS_DB_API_KEY || '123';
 const DATA_DIR = path.join(__dirname, '../src/data');
 const OUT_FILE = path.join(DATA_DIR, 'teams.json');
 
@@ -20,7 +20,7 @@ function fetchJson(url) {
             res.on('end', () => {
                 try {
                     resolve(JSON.parse(data));
-                } catch(e) {
+                } catch (e) {
                     resolve(null);
                 }
             });
@@ -43,7 +43,7 @@ async function main() {
     console.log(`Found ${leagues.length} leagues. Fetching teams for each... this may take a minute.`);
 
     let allTeams = [];
-    
+
     // Create data dir if missing
     if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -51,7 +51,7 @@ async function main() {
 
     // Process in small batches so we don't overwhelm the API
     const BATCH_SIZE = 10;
-    
+
     for (let i = 0; i < leagues.length; i += BATCH_SIZE) {
         const batch = leagues.slice(i, i + BATCH_SIZE);
         const promises = batch.map(async (league) => {
@@ -68,7 +68,7 @@ async function main() {
         if (flatTeams.length > 0) {
             allTeams = allTeams.concat(flatTeams);
         }
-        
+
         process.stdout.write(`\rProgress: ${Math.min(i + BATCH_SIZE, leagues.length)} / ${leagues.length} leagues processed... (${allTeams.length} teams found so far)`);
         await delay(50); // Small pause
     }
@@ -79,7 +79,7 @@ async function main() {
     for (const t of allTeams) {
         if (!ids.has(t.idTeam)) {
             ids.add(t.idTeam);
-            
+
             // Keep only essential properties to save file size
             uniqueTeams.push({
                 idTeam: t.idTeam,

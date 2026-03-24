@@ -8,7 +8,7 @@ export async function GET(request) {
         return NextResponse.json({ error: 'Team ID is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.REACT_APP_SPORTS_DB_API_KEY;
+    const apiKey = process.env.SPORTS_DB_API_KEY;
 
     try {
         const [pastRes, upcomingRes] = await Promise.all([

@@ -1,0 +1,510 @@
+[debug] [2026-03-24T07:22:25.129Z] ----------------------------------------------------------------------
+[debug] [2026-03-24T07:22:25.141Z] Command:       C:\nvm4w\nodejs\node.exe C:\Users\jrud2\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-03-24T07:22:25.141Z] CLI Version:   14.11.2
+[debug] [2026-03-24T07:22:25.141Z] Platform:      win32
+[debug] [2026-03-24T07:22:25.141Z] Node Version:  v22.18.0
+[debug] [2026-03-24T07:22:25.142Z] Time:          Tue Mar 24 2026 00:22:25 GMT-0700 (Pacific Daylight Time)
+[debug] [2026-03-24T07:22:25.142Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-24T07:22:25.328Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-24T07:22:25.329Z] > authorizing via signed-in user (elementx1525@gmail.com)
+[debug] [2026-03-24T07:22:25.329Z] [iam] checking project scoreseeker-9dfa6 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-24T07:22:25.330Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:22:25.330Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:22:25.331Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions [none]
+[debug] [2026-03-24T07:22:25.331Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions x-goog-quota-user=projects/scoreseeker-9dfa6
+[debug] [2026-03-24T07:22:25.332Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-24T07:22:25.576Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions 200
+[debug] [2026-03-24T07:22:25.576Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-24T07:22:25.577Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:22:25.577Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:22:25.577Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/scoreseeker-9dfa6 [none]
+[debug] [2026-03-24T07:22:25.928Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/scoreseeker-9dfa6 200
+[debug] [2026-03-24T07:22:25.928Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/scoreseeker-9dfa6 {"projectId":"scoreseeker-9dfa6","projectNumber":"209561162971","displayName":"scoreseeker","name":"projects/scoreseeker-9dfa6","resources":{"hostingSite":"scoreseeker-9dfa6"},"state":"ACTIVE","etag":"1_83150176-636d-4668-9b64-8398c36b15a7"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-03-24T07:22:49.049Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:22:49.049Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:22:49.049Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6 [none]
+[debug] [2026-03-24T07:22:49.785Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6 200
+[debug] [2026-03-24T07:22:49.785Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6 {"name":"projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6","defaultUrl":"https://scoreseeker-9dfa6.web.app","appId":"1:209561162971:web:f3044de4dd94c46f0ce8fe","type":"DEFAULT_SITE"}
+[info] ▲ Next.js 16.2.1 (Turbopack)
+
+[info] - Environments: .env
+
+
+[info]   Creating an optimized production build ...
+
+[info] ✓ Compiled successfully in 5.8s
+
+[info]   Running TypeScript ...
+
+[info]   Finished TypeScript in 201ms ...
+
+[info]   Collecting page data using 6 workers ...
+
+[info]   Generating static pages using 6 workers (0/5) ...
+
+[info]   Generating static pages using 6 workers (1/5) 
+
+[info]   Generating static pages using 6 workers (2/5) 
+
+[info]   Generating static pages using 6 workers (3/5) 
+
+[info] ✓ Generating static pages using 6 workers (5/5) in 1122ms
+
+[info]   Finalizing page optimization ...
+
+[info] 
+
+[info] Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/matches
+└ ƒ /api/team
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+[info] Building a Cloud Function to run this application. This is needed due to:
+[info]  • non-static component /api/matches/route
+[info]  • non-static component /api/team/route
+[info] 
+[debug] [2026-03-24T07:23:08.400Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:08.400Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:08.400Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6 [none]
+[debug] [2026-03-24T07:23:09.140Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6 200
+[debug] [2026-03-24T07:23:09.140Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6 {"name":"projects/scoreseeker-9dfa6/sites/scoreseeker-9dfa6","defaultUrl":"https://scoreseeker-9dfa6.web.app","appId":"1:209561162971:web:f3044de4dd94c46f0ce8fe","type":"DEFAULT_SITE"}
+[warn] !  This integration expects Node version 16, 18, or 20. You're running version 22, problems may be encountered. 
+[debug] [2026-03-24T07:23:19.664Z] [web frameworks] effective firebase.json:  {
+  "hosting": [
+    {
+      "source": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "frameworksBackend": {
+        "secrets": [
+          "SPORTS_DB_API_KEY"
+        ]
+      },
+      "site": "scoreseeker-9dfa6",
+      "rewrites": [
+        {
+          "source": "**",
+          "function": {
+            "functionId": "ssrscoreseeker9dfa6",
+            "region": "us-central1",
+            "pinTag": true
+          }
+        }
+      ],
+      "redirects": [],
+      "headers": [
+        {
+          "source": "/_global-error",
+          "headers": [
+            {
+              "key": "x-nextjs-stale-time",
+              "value": "300"
+            },
+            {
+              "key": "x-nextjs-prerender",
+              "value": "1"
+            },
+            {
+              "key": "x-next-cache-tags",
+              "value": "_N_T_/layout,_N_T_/_global-error/layout,_N_T_/_global-error/page,_N_T_/_global-error"
+            }
+          ]
+        },
+        {
+          "source": "/_not-found",
+          "headers": [
+            {
+              "key": "x-nextjs-stale-time",
+              "value": "300"
+            },
+            {
+              "key": "x-nextjs-prerender",
+              "value": "1"
+            },
+            {
+              "key": "x-next-cache-tags",
+              "value": "_N_T_/layout,_N_T_/_not-found/layout,_N_T_/_not-found/page,_N_T_/_not-found"
+            }
+          ]
+        }
+      ],
+      "cleanUrls": true,
+      "trailingSlash": false,
+      "public": ".firebase\\scoreseeker-9dfa6\\hosting",
+      "webFramework": "next_ssr"
+    }
+  ],
+  "functions": [
+    {
+      "source": ".firebase\\scoreseeker-9dfa6\\functions",
+      "codebase": "firebase-frameworks-scoreseeker-9dfa6"
+    }
+  ]
+}
+[debug] [2026-03-24T07:23:19.665Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-24T07:23:19.665Z] > authorizing via signed-in user (elementx1525@gmail.com)
+[debug] [2026-03-24T07:23:19.665Z] [iam] checking project scoreseeker-9dfa6 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-03-24T07:23:19.666Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:19.666Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:19.666Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions [none]
+[debug] [2026-03-24T07:23:19.666Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions x-goog-quota-user=projects/scoreseeker-9dfa6
+[debug] [2026-03-24T07:23:19.666Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-03-24T07:23:19.819Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions 200
+[debug] [2026-03-24T07:23:19.819Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'scoreseeker-9dfa6'...
+[info] 
+[info] i  deploying functions, hosting 
+[debug] [2026-03-24T07:23:19.823Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:19.824Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:19.824Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6 [none]
+[debug] [2026-03-24T07:23:19.940Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6 200
+[debug] [2026-03-24T07:23:19.941Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6 {"projectNumber":"209561162971","projectId":"scoreseeker-9dfa6","lifecycleState":"ACTIVE","name":"scoreseeker","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-08-05T22:23:45.353618Z"}
+[info] i  functions: preparing codebase firebase-frameworks-scoreseeker-9dfa6 for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2026-03-24T07:23:19.948Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:19.948Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:19.948Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/adminSdkConfig [none]
+[debug] [2026-03-24T07:23:20.302Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/adminSdkConfig 200
+[debug] [2026-03-24T07:23:20.302Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/adminSdkConfig {"projectId":"scoreseeker-9dfa6","storageBucket":"scoreseeker-9dfa6.firebasestorage.app"}
+[debug] [2026-03-24T07:23:20.303Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:20.303Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:20.303Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/configs [none]
+[debug] [2026-03-24T07:23:20.502Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/configs 200
+[debug] [2026-03-24T07:23:20.502Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/scoreseeker-9dfa6/configs {}
+[debug] [2026-03-24T07:23:20.505Z] Validating nodejs source
+[warn] !  functions: Runtime Node.js 20 will be deprecated on 2026-04-30 and will be decommissioned on 2026-10-30, after which you will not be able to deploy without upgrading. Consider upgrading now to avoid disruption. See https://cloud.google.com/functions/docs/runtime-support for full details on the lifecycle policy 
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-24T07:23:21.317Z] > [functions] package.json contents: {
+  "name": "scoreseeker",
+  "version": "1.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.3",
+    "@mui/material": "^6.4.3",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "date-fns-tz": "^3.2.0",
+    "next": "^16.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tone": "^15.0.4",
+    "firebase-frameworks": "^0.11.0",
+    "firebase-functions": "^6.0.1",
+    "firebase-admin": "^11.11.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "main": "server.js",
+  "engines": {
+    "node": "20"
+  }
+}
+[debug] [2026-03-24T07:23:21.317Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase firebase-frameworks-scoreseeker-9dfa6 to determine what to deploy 
+[debug] [2026-03-24T07:23:21.319Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-24T07:23:21.349Z] Found firebase-functions binary at 'C:\Projects\scoreseeker\.firebase\scoreseeker-9dfa6\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8153
+
+[debug] [2026-03-24T07:23:22.125Z] Got response from /__/functions.yaml {"endpoints":{"ssrscoreseeker9dfa6":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"SPORTS_DB_API_KEY"}],"labels":{},"httpsTrigger":{},"entryPoint":"ssrscoreseeker9dfa6"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled... 
+[debug] [2026-03-24T07:23:26.182Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-24T07:23:26.182Z] > authorizing via signed-in user (elementx1525@gmail.com)
+[debug] [2026-03-24T07:23:26.182Z] [iam] checking project scoreseeker-9dfa6 for permissions ["firebase.projects.get","firebaseextensions.instances.list"]
+[debug] [2026-03-24T07:23:26.183Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:26.183Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:26.183Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions [none]
+[debug] [2026-03-24T07:23:26.183Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions x-goog-quota-user=projects/scoreseeker-9dfa6
+[debug] [2026-03-24T07:23:26.183Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2026-03-24T07:23:26.294Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions 200
+[debug] [2026-03-24T07:23:26.295Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2026-03-24T07:23:26.296Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:26.296Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:23:26.308Z] >>> [apiv2][query] GET https://firebaseextensions.googleapis.com/v1beta/projects/scoreseeker-9dfa6/instances pageSize=100&pageToken=
+[debug] [2026-03-24T07:23:26.753Z] <<< [apiv2][status] GET https://firebaseextensions.googleapis.com/v1beta/projects/scoreseeker-9dfa6/instances 200
+[debug] [2026-03-24T07:23:26.753Z] <<< [apiv2][body] GET https://firebaseextensions.googleapis.com/v1beta/projects/scoreseeker-9dfa6/instances {}
+[info] i  functions: Loaded environment variables from .env. 
+[info] i  functions: preparing .firebase\scoreseeker-9dfa6\functions directory for uploading... 
+[info] i  functions: packaged C:\Projects\scoreseeker\.firebase\scoreseeker-9dfa6\functions (351.66 MB) for uploading 
+[debug] [2026-03-24T07:24:27.490Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:27.491Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:27.491Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/scoreseeker-9dfa6/locations/-/functions [none]
+[debug] [2026-03-24T07:24:27.996Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/scoreseeker-9dfa6/locations/-/functions 200
+[debug] [2026-03-24T07:24:27.996Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/scoreseeker-9dfa6/locations/-/functions {}
+[debug] [2026-03-24T07:24:27.996Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:27.996Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:27.997Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2026-03-24T07:24:28.567Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/-/functions 200
+[debug] [2026-03-24T07:24:28.567Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/-/functions {"functions":[{"name":"projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6","buildConfig":{"build":"projects/209561162971/locations/us-central1/builds/9cf755af-d4ab-4f1d-93b2-6ca6b65a7da3","runtime":"nodejs20","entryPoint":"ssrscoreseeker9dfa6","source":{"storageSource":{"bucket":"gcf-v2-sources-209561162971-us-central1","object":"ssrscoreseeker9dfa6/function-source.zip","generation":"1774336038533569"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/scoreseeker-9dfa6/locations/us-central1/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-209561162971-us-central1","object":"ssrscoreseeker9dfa6/function-source.zip","generation":"1774336038533569"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/scoreseeker-9dfa6/serviceAccounts/209561162971-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6","timeoutSeconds":60,"environmentVariables":{"SPORTS_DB_API_KEY":"871003","NEXT_PUBLIC_FIREBASE_API_KEY":"AIzaSyBX0a6JgDWeH6s1jrY_xdErbNrX51YK3RA","NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN":"scoreseeker-9dfa6.firebaseapp.com","NEXT_PUBLIC_FIREBASE_PROJECT_ID":"scoreseeker-9dfa6","NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET":"scoreseeker-9dfa6.firebasestorage.app","NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID":"209561162971","NEXT_PUBLIC_FIREBASE_APP_ID":"1:209561162971:web:f3044de4dd94c46f0ce8fe","NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID":"G-JR1FG3RKN9","VERCEL_URL":"scoreseeker-9dfa6.web.app","__FIREBASE_FRAMEWORKS_ENTRY__":"next.js","FIREBASE_CONFIG":"{\"projectId\":\"scoreseeker-9dfa6\",\"storageBucket\":\"scoreseeker-9dfa6.firebasestorage.app\"}","GCLOUD_PROJECT":"scoreseeker-9dfa6","EVENTARC_CLOUD_EVENT_SOURCE":"projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6","FUNCTION_TARGET":"ssrscoreseeker9dfa6","LOG_EXECUTION_ID":"true"},"ingressSettings":"ALLOW_ALL","uri":"https://ssrscoreseeker9dfa6-qyktrwtfxa-uc.a.run.app","serviceAccountEmail":"209561162971-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"ssrscoreseeker9dfa6-00001-joq","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-03-24T07:12:08.383372596Z","labels":{"firebase-functions-codebase":"firebase-frameworks-scoreseeker-9dfa6","firebase-functions-hash":"bab68a51a10cb348ea973a5b61f4932eda27d56b","deployment-tool":"cli-firebase"},"environment":"GEN_2","url":"https://us-central1-scoreseeker-9dfa6.cloudfunctions.net/ssrscoreseeker9dfa6","createTime":"2026-03-24T07:00:15.354984239Z","satisfiesPzi":true}]}
+[info] i  functions: ensuring required API run.googleapis.com is enabled... 
+[info] i  functions: ensuring required API eventarc.googleapis.com is enabled... 
+[info] i  functions: ensuring required API pubsub.googleapis.com is enabled... 
+[info] i  functions: ensuring required API storage.googleapis.com is enabled... 
+[info] i  functions: generating the service identity for pubsub.googleapis.com... 
+[debug] [2026-03-24T07:24:28.578Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:28.578Z] Checked if tokens are valid: true, expires at: 1774338833481
+[info] i  functions: generating the service identity for eventarc.googleapis.com... 
+[debug] [2026-03-24T07:24:28.579Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:28.579Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:28.579Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/pubsub.googleapis.com:generateServiceIdentity [none]
+[debug] [2026-03-24T07:24:28.579Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/pubsub.googleapis.com:generateServiceIdentity x-goog-quota-user=projects/209561162971
+[debug] [2026-03-24T07:24:28.579Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/pubsub.googleapis.com:generateServiceIdentity {}
+[debug] [2026-03-24T07:24:28.583Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/eventarc.googleapis.com:generateServiceIdentity [none]
+[debug] [2026-03-24T07:24:28.583Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/eventarc.googleapis.com:generateServiceIdentity x-goog-quota-user=projects/209561162971
+[debug] [2026-03-24T07:24:28.583Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/eventarc.googleapis.com:generateServiceIdentity {}
+[debug] [2026-03-24T07:24:29.139Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/pubsub.googleapis.com:generateServiceIdentity 200
+[debug] [2026-03-24T07:24:29.140Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/pubsub.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-209561162971@gcp-sa-pubsub.iam.gserviceaccount.com","uniqueId":"111766030914010032038"}}
+[debug] [2026-03-24T07:24:29.180Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/eventarc.googleapis.com:generateServiceIdentity 200
+[debug] [2026-03-24T07:24:29.180Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/209561162971/services/eventarc.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-209561162971@gcp-sa-eventarc.iam.gserviceaccount.com","uniqueId":"107330675365978608520"}}
+[info] i  functions: ensuring required API secretmanager.googleapis.com is enabled... 
+[debug] [2026-03-24T07:24:29.182Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.182Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.183Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/209561162971/services/secretmanager.googleapis.com [none]
+[debug] [2026-03-24T07:24:29.183Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/209561162971/services/secretmanager.googleapis.com x-goog-quota-user=projects/209561162971
+[debug] [2026-03-24T07:24:29.325Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/209561162971/services/secretmanager.googleapis.com 200
+[debug] [2026-03-24T07:24:29.326Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/209561162971/services/secretmanager.googleapis.com [omitted]
+[info] +  functions: required API secretmanager.googleapis.com is enabled 
+[debug] [2026-03-24T07:24:29.351Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.351Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.351Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY/versions/latest [none]
+[debug] [2026-03-24T07:24:29.584Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY/versions/latest 200
+[debug] [2026-03-24T07:24:29.584Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY/versions/latest {"name":"projects/209561162971/secrets/SPORTS_DB_API_KEY/versions/1","createTime":"2026-03-24T06:54:12.345146Z","state":"ENABLED","replicationStatus":{"automatic":{}},"etag":"\"164dbf9e6db13a\""}
+[debug] [2026-03-24T07:24:29.585Z] Resolved secret version of SPORTS_DB_API_KEY to 1.
+[debug] [2026-03-24T07:24:29.586Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.586Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.587Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6 [none]
+[debug] [2026-03-24T07:24:29.740Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6 200
+[debug] [2026-03-24T07:24:29.741Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/scoreseeker-9dfa6 {"projectNumber":"209561162971","projectId":"scoreseeker-9dfa6","lifecycleState":"ACTIVE","name":"scoreseeker","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-08-05T22:23:45.353618Z"}
+[debug] [2026-03-24T07:24:29.741Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.741Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.741Z] >>> [apiv2][query] GET https://compute.googleapis.com/compute/v1/projects/209561162971 [none]
+[debug] [2026-03-24T07:24:29.941Z] <<< [apiv2][status] GET https://compute.googleapis.com/compute/v1/projects/209561162971 403
+[debug] [2026-03-24T07:24:29.942Z] <<< [apiv2][body] GET https://compute.googleapis.com/compute/v1/projects/209561162971 {"error":{"code":403,"message":"Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.","errors":[{"message":"Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.","domain":"usageLimits","reason":"accessNotConfigured","extendedHelp":"https://console.developers.google.com"}],"status":"PERMISSION_DENIED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"SERVICE_DISABLED","domain":"googleapis.com","metadata":{"consumer":"projects/209561162971","service":"compute.googleapis.com","serviceTitle":"Compute Engine API","containerInfo":"209561162971","activationUrl":"https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Google developers console API activation","url":"https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971"}]}]}}
+[debug] [2026-03-24T07:24:29.944Z] unable to look up default compute service account. Falling back to 209561162971-compute@developer.gserviceaccount.com. Error: {"name":"FirebaseError","children":[],"context":{"body":{"error":{"code":403,"message":"Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.","errors":[{"message":"Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.","domain":"usageLimits","reason":"accessNotConfigured","extendedHelp":"https://console.developers.google.com"}],"status":"PERMISSION_DENIED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"SERVICE_DISABLED","domain":"googleapis.com","metadata":{"consumer":"projects/209561162971","service":"compute.googleapis.com","serviceTitle":"Compute Engine API","containerInfo":"209561162971","activationUrl":"https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Google developers console API activation","url":"https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971"}]}]}},"response":{"statusCode":403}},"exit":1,"message":"Request to https://compute.googleapis.com/compute/v1/projects/209561162971 had HTTP Error: 403, Compute Engine API has not been used in project 209561162971 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/compute.googleapis.com/overview?project=209561162971 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.","status":403}
+[info] i  functions: ensuring 209561162971-compute@developer.gserviceaccount.com access to secret SPORTS_DB_API_KEY. 
+[debug] [2026-03-24T07:24:29.946Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.946Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:29.947Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:getIamPolicy [none]
+[debug] [2026-03-24T07:24:30.140Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:getIamPolicy 200
+[debug] [2026-03-24T07:24:30.141Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:getIamPolicy {"etag":"ACAB"}
+[debug] [2026-03-24T07:24:30.142Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:30.142Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:30.142Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:setIamPolicy [none]
+[debug] [2026-03-24T07:24:30.142Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:setIamPolicy {"policy":{"bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:209561162971-compute@developer.gserviceaccount.com"]}]},"updateMask":"bindings"}
+[debug] [2026-03-24T07:24:30.384Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:setIamPolicy 200
+[debug] [2026-03-24T07:24:30.384Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY:setIamPolicy {"version":1,"etag":"BwZNwAq82as=","bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:209561162971-compute@developer.gserviceaccount.com"]}]}
+[info] +  secretmanager: Granted roles/secretmanager.secretAccessor on projects/scoreseeker-9dfa6/secrets/SPORTS_DB_API_KEY to 209561162971-compute@developer.gserviceaccount.com 
+[info] +  functions: ensured 209561162971-compute@developer.gserviceaccount.com access to SPORTS_DB_API_KEY. 
+[debug] [2026-03-24T07:24:30.403Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:30.403Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:30.403Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/scoreseeker-9dfa6/versions [none]
+[debug] [2026-03-24T07:24:30.403Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/scoreseeker-9dfa6/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase","firebase-web-framework":"next_ssr"}}
+[debug] [2026-03-24T07:24:31.365Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/scoreseeker-9dfa6/versions 200
+[debug] [2026-03-24T07:24:31.365Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/scoreseeker-9dfa6/versions {"name":"projects/209561162971/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9","status":"CREATED","config":{},"labels":{"firebase-web-framework":"next_ssr","deployment-tool":"cli-firebase"}}
+[debug] [2026-03-24T07:24:31.367Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:31.367Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:31.367Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/scoreseeker-9dfa6/billingInfo [none]
+[debug] [2026-03-24T07:24:31.785Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/scoreseeker-9dfa6/billingInfo 200
+[debug] [2026-03-24T07:24:31.786Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/scoreseeker-9dfa6/billingInfo {"name":"projects/scoreseeker-9dfa6/billingInfo","projectId":"scoreseeker-9dfa6","billingAccountName":"billingAccounts/018107-1BE0AA-4749A1","billingEnabled":true}
+[debug] [2026-03-24T07:24:31.788Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:31.789Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:31.789Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2026-03-24T07:24:32.186Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions:generateUploadUrl 200
+[debug] [2026-03-24T07:24:32.186Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com/1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip?GoogleAccessId=service-209561162971@gcf-admin-robot.iam.gserviceaccount.com&Expires=1774338871&Signature=WKjq9ORVJnAie4%2Fo2osTRqjjLGNal%2FQGNku1aFTVi0EREnMfk61WegjlXHxXRR%2Fs8Bf8qRpLcmWLOkbbvL2lUdloqHyiM42G5GbfIZrj7ahBNtoczxY1n53blJNXQu6snhWIL%2FR8upIASRMoTRsbLQjJrggd6lo%2FYjw8EtrSvAoAQ9rvE0W22VAzIz%2BFMHYeUYSH5k%2BFxANLlsfLanRgG2PNTPoZ%2BdfcHtn4VvEjr96zmWV44Yq08DmUb7ci%2FzucRGpLngwns%2BLZojnv%2BCH42o3K7GDKsf1LDv%2F8KaK%2FvMEIEJWHq%2BLMf%2FI6p9vzl%2BP4qaD7gSh1qCUYF7m06P0Rdg%3D%3D","storageSource":{"bucket":"gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com","object":"1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip"}}
+[debug] [2026-03-24T07:24:32.189Z] >>> [apiv2][query] PUT https://storage.googleapis.com/gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com/1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip GoogleAccessId=service-209561162971%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1774338871&Signature=WKjq9ORVJnAie4%2Fo2osTRqjjLGNal%2FQGNku1aFTVi0EREnMfk61WegjlXHxXRR%2Fs8Bf8qRpLcmWLOkbbvL2lUdloqHyiM42G5GbfIZrj7ahBNtoczxY1n53blJNXQu6snhWIL%2FR8upIASRMoTRsbLQjJrggd6lo%2FYjw8EtrSvAoAQ9rvE0W22VAzIz%2BFMHYeUYSH5k%2BFxANLlsfLanRgG2PNTPoZ%2BdfcHtn4VvEjr96zmWV44Yq08DmUb7ci%2FzucRGpLngwns%2BLZojnv%2BCH42o3K7GDKsf1LDv%2F8KaK%2FvMEIEJWHq%2BLMf%2FI6p9vzl%2BP4qaD7gSh1qCUYF7m06P0Rdg%3D%3D
+[debug] [2026-03-24T07:24:32.189Z] >>> [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com/1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip [stream]
+[debug] [2026-03-24T07:24:57.786Z] <<< [apiv2][status] PUT https://storage.googleapis.com/gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com/1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip 200
+[debug] [2026-03-24T07:24:57.786Z] <<< [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com/1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip [omitted]
+[info] +  functions: .firebase\scoreseeker-9dfa6\functions folder uploaded successfully 
+[info] i  hosting[scoreseeker-9dfa6]: beginning deploy... 
+[info] i  hosting[scoreseeker-9dfa6]: found 37 files in .firebase\scoreseeker-9dfa6\hosting 
+[debug] [2026-03-24T07:24:57.804Z] [hosting] uploading with 200 concurrency
+[debug] [2026-03-24T07:24:58.985Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:58.986Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:24:58.997Z] [hosting] hash cache [LmZpcmViYXNlXHNjb3Jlc2Vla2VyLTlkZmE2XGhvc3Rpbmc] stored for 37 files
+[debug] [2026-03-24T07:24:58.997Z] [hosting][hash queue][FINAL] {"max":1158,"min":1,"avg":222.51351351351352,"active":0,"complete":37,"success":37,"errored":0,"retried":0,"total":37,"elapsed":1174}
+[debug] [2026-03-24T07:24:58.998Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/209561162971/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9:populateFiles [none]
+[debug] [2026-03-24T07:24:58.998Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/209561162971/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9:populateFiles {"files":{"/robots.txt":"b2090cf9761ef60aa06e4fab97679bd43dfa5e5df073701ead5879d7c68f1ec5","/manifest.json":"54d565776fc385c256118a6ac5e23ef3fac1fb25b05b2afaaaff7a9a40f762c7","/icons/mstile-70x70.png":"c8b88cb7688a776de658b596ad46bb5e8b369e205eeab2217ba893e1ef145081","/icons/mstile-310x310.png":"4d2ffdff88e6fd6c32e78668cc9a402aacd0cd5c86005dda7d7c3484f02073db","/icons/mstile-310x150.png":"ee52f17554c6b48e6d1a1db74a1eaccca2e5b5dbe40f891835487c0afd37ea8f","/icons/mstile-150x150.png":"4d740e0bc248d28469cf529e68265758976167e00d508516c8df071ad072f4ad","/icons/mstile-144x144.png":"a05a35b1288d2f9fd3e43bbf23617e3a805ccd6c1135a88cf20e04dd9da2706d","/icons/favicon.ico":"854435bae0ac180bd2e050f98471d62e63ee874f3fc6268e49d0977c64e5100b","/icons/favicon-96x96.png":"45fc1bbaf2ab2cf55e06ecf909bea0d4de726e806fbb9f29eeca57257703ccf9","/icons/favicon-32x32.png":"a03bc6aa11c9cee09e21675384643ccf4cb3032e95a73ff366cd0639eb7f75e7","/icons/favicon-196x196.png":"47ae1ceeca2a02974182baea688ff9b0bb68eb22f826ca751442c76d022fddd0","/icons/favicon-16x16.png":"a4071dfaf2b3a8cc40c9e3278f163ee01a9ec40289253c264ee2683ebe9b124a","/icons/favicon-128.png":"c8b88cb7688a776de658b596ad46bb5e8b369e205eeab2217ba893e1ef145081","/icons/apple-touch-icon-76x76.png":"d1acce0783041899c8666ba2247b146ce506f40fe1533749e2f9cdc31cd229c3","/icons/apple-touch-icon-72x72.png":"ed61c74418a5cb6da22aadab68e31433ae6baa747d6f14ee98f40b952ca4d78d","/icons/apple-touch-icon-60x60.png":"633748685d4769be4dffe33a4685dfda699aff2672a8ef66a3ae9ee8138e5000","/icons/apple-touch-icon-57x57.png":"951ad200435f01cf1f893bbfa1f26ba165afa941ea2b6dc23ba41e59ba90fe9e","/icons/apple-touch-icon-152x152.png":"bb306bdac22873b52ca4866f54a0aa1227d65470429784eebb19f6c9c73ee835","/icons/apple-touch-icon-144x144.png":"a05a35b1288d2f9fd3e43bbf23617e3a805ccd6c1135a88cf20e04dd9da2706d","/icons/apple-touch-icon-120x120.png":"c3042d0874dd5325aeac8cfd26cd0552b45306476dfbd0cb0771170874a60482","/icons/apple-touch-icon-114x114.png":"fc40414d1fbb6d7ebed88696d618e5c2694de17472a833ecbf1ca43b04220334","/_not-found.html":"556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46","/404.html":"556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46","/_next/static/_o34kF5j4PY5YyS-Cvkj6/_ssgManifest.js":"dc28a4dc92fe352ed5d2201bd3972ce47691bc8e89e0400a68d1541d0567c6d5","/_next/static/_o34kF5j4PY5YyS-Cvkj6/_clientMiddlewareManifest.js":"5e57f6166b702492ab9551af57e4546546c184673a4c0432f73b96f62820f7eb","/_next/static/_o34kF5j4PY5YyS-Cvkj6/_buildManifest.js":"dcbe1c9b9159ca21caea98e1bad364012ae284e9551375ca62b83d2811efac91","/_next/static/chunks/turbopack-17~3hg2g31lri.js":"d2df397747167005b51ed24e8bc6a3dad94c1f366def9143932b4a8b707e26aa","/_next/static/chunks/0xzp79ez98i1q.js":"3c446dd296ca3cd3f18a26ef46e7583c05e06abdeff1917552388639bafa0b84","/500.html":"2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980","/_global-error.html":"2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980","/index.html":"7ed1bed612dc991af8361562ccc876ffd893e1b47255c0562f92fead8bc5a668","/_next/static/chunks/0m3ebelsvenif.css":"d16a9a414f831d21d6625a5f327b43dfaa2d140d6452fc822b7a94534d696231","/_next/static/chunks/0q1440ny0dbby.js":"2a841b6aa4dd098263573d6d0057b070f9b666dbda243bf65e343af574331f37","/_next/static/chunks/0x-c-08no_zst.js":"ba27bd02b2d9df8ada843b75bc0bb84b586ceb13091a45e7bc76b5fda4015762","/_next/static/chunks/0mhkm830y48iu.js":"11587ef49e017d0140de572674851b73639ea07dee28b8c42232c46a68c11346","/_next/static/chunks/025elby5ujpdd.js":"4cc80ae7563880ec330755efa287b257f75f9245f43917065aef860024e0445a","/_next/static/chunks/03~yq9q893hmn.js":"18e28d3214eda45048d80d3925ea7627b809e69ad2e95f7f98459e9146a61c3d"}}
+[debug] [2026-03-24T07:25:00.041Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/209561162971/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9:populateFiles 200
+[debug] [2026-03-24T07:25:00.041Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/209561162971/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9:populateFiles {"uploadRequiredHashes":["556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46","7ed1bed612dc991af8361562ccc876ffd893e1b47255c0562f92fead8bc5a668","2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files"}
+[debug] [2026-03-24T07:25:00.042Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:00.042Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:00.042Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:00.042Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:00.042Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:00.042Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:00.042Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46 [none]
+[debug] [2026-03-24T07:25:00.042Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46 [stream]
+[debug] [2026-03-24T07:25:00.043Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/7ed1bed612dc991af8361562ccc876ffd893e1b47255c0562f92fead8bc5a668 [none]
+[debug] [2026-03-24T07:25:00.043Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/7ed1bed612dc991af8361562ccc876ffd893e1b47255c0562f92fead8bc5a668 [stream]
+[debug] [2026-03-24T07:25:00.044Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980 [none]
+[debug] [2026-03-24T07:25:00.044Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980 [stream]
+[debug] [2026-03-24T07:25:00.045Z] [hosting][populate queue][FINAL] {"max":1057,"min":1057,"avg":1057,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":1060}
+[debug] [2026-03-24T07:25:00.045Z] [hosting] uploads queued: 3
+[debug] [2026-03-24T07:25:00.914Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980 200
+[debug] [2026-03-24T07:25:00.914Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/2335988d720b9be83e58b29805c260338ceb731156d72de3cdc906bed6277980 [stream]
+[debug] [2026-03-24T07:25:01.267Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/7ed1bed612dc991af8361562ccc876ffd893e1b47255c0562f92fead8bc5a668 200
+[debug] [2026-03-24T07:25:01.267Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/7ed1bed612dc991af8361562ccc876ffd893e1b47255c0562f92fead8bc5a668 [stream]
+[debug] [2026-03-24T07:25:01.268Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46 200
+[debug] [2026-03-24T07:25:01.268Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/scoreseeker-9dfa6/versions/0cc37157c0cb55c9/files/556bdbc852a9ef4120cd43229f206ccb0cbbc0b9a236192b4a280391c737ca46 [stream]
+[debug] [2026-03-24T07:25:01.268Z] [hosting][upload queue][FINAL] {"max":1227,"min":872,"avg":1108,"active":0,"complete":3,"success":3,"errored":0,"retried":0,"total":3,"elapsed":1227}
+[info] +  hosting[scoreseeker-9dfa6]: file upload complete 
+[debug] [2026-03-24T07:25:01.269Z] [hosting] deploy completed after 3479ms
+[info] i  functions: updating Node.js 20 (2nd Gen) function firebase-frameworks-scoreseeker-9dfa6:ssrscoreseeker9dfa6(us-central1)... 
+[debug] [2026-03-24T07:25:01.273Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:01.273Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:01.273Z] >>> [apiv2][query] PATCH https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6 updateMask=name%2CbuildConfig.runtime%2CbuildConfig.entryPoint%2CbuildConfig.source.storageSource.bucket%2CbuildConfig.source.storageSource.object%2CbuildConfig.environmentVariables%2CbuildConfig.sourceToken%2CserviceConfig.environmentVariables%2CserviceConfig.secretEnvironmentVariables%2CserviceConfig.ingressSettings%2CserviceConfig.timeoutSeconds%2CserviceConfig.serviceAccountEmail%2CserviceConfig.availableMemory%2CserviceConfig.minInstanceCount%2CserviceConfig.maxInstanceCount%2CserviceConfig.maxInstanceRequestConcurrency%2CserviceConfig.availableCpu%2CserviceConfig.vpcConnector%2CserviceConfig.vpcConnectorEgressSettings%2Clabels
+[debug] [2026-03-24T07:25:01.273Z] >>> [apiv2][body] PATCH https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6 {"name":"projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6","buildConfig":{"runtime":"nodejs20","entryPoint":"ssrscoreseeker9dfa6","source":{"storageSource":{"bucket":"gcf-v2-uploads-209561162971.us-central1.cloudfunctions.appspot.com","object":"1aac73dd-01fe-442d-8e0b-f0b4e800506b.zip"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""}},"serviceConfig":{"environmentVariables":{"SPORTS_DB_API_KEY":"871003","NEXT_PUBLIC_FIREBASE_API_KEY":"AIzaSyBX0a6JgDWeH6s1jrY_xdErbNrX51YK3RA","NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN":"scoreseeker-9dfa6.firebaseapp.com","NEXT_PUBLIC_FIREBASE_PROJECT_ID":"scoreseeker-9dfa6","NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET":"scoreseeker-9dfa6.firebasestorage.app","NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID":"209561162971","NEXT_PUBLIC_FIREBASE_APP_ID":"1:209561162971:web:f3044de4dd94c46f0ce8fe","NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID":"G-JR1FG3RKN9","VERCEL_URL":"scoreseeker-9dfa6.web.app","__FIREBASE_FRAMEWORKS_ENTRY__":"next.js","FIREBASE_CONFIG":"{\"projectId\":\"scoreseeker-9dfa6\",\"storageBucket\":\"scoreseeker-9dfa6.firebasestorage.app\"}","GCLOUD_PROJECT":"scoreseeker-9dfa6","EVENTARC_CLOUD_EVENT_SOURCE":"projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6","FUNCTION_TARGET":"ssrscoreseeker9dfa6","LOG_EXECUTION_ID":"true"},"secretEnvironmentVariables":[{"key":"SPORTS_DB_API_KEY","secret":"SPORTS_DB_API_KEY","projectId":"scoreseeker-9dfa6","version":"1"}],"ingressSettings":null,"timeoutSeconds":null,"serviceAccountEmail":null,"availableMemory":"256Mi","minInstanceCount":null,"maxInstanceCount":null,"maxInstanceRequestConcurrency":80,"availableCpu":"1","vpcConnector":null,"vpcConnectorEgressSettings":null},"labels":{"deployment-tool":"cli-firebase","firebase-functions-codebase":"firebase-frameworks-scoreseeker-9dfa6","firebase-functions-hash":"598e4b9820f90565292755a3f77fb030aaa3aa16"}}
+[debug] [2026-03-24T07:25:01.995Z] <<< [apiv2][status] PATCH https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6 400
+[debug] [2026-03-24T07:25:01.996Z] <<< [apiv2][body] PATCH https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6 {"error":{"code":400,"message":"Could not update Cloud Run service projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6. spec.template.spec.containers[0].env: Secret environment variable overlaps non secret environment variable: SPORTS_DB_API_KEY","status":"INVALID_ARGUMENT"}}
+[warn] !  functions: Request to https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6?updateMask=name%2CbuildConfig.runtime%2CbuildConfig.entryPoint%2CbuildConfig.source.storageSource.bucket%2CbuildConfig.source.storageSource.object%2CbuildConfig.environmentVariables%2CbuildConfig.sourceToken%2CserviceConfig.environmentVariables%2CserviceConfig.secretEnvironmentVariables%2CserviceConfig.ingressSettings%2CserviceConfig.timeoutSeconds%2CserviceConfig.serviceAccountEmail%2CserviceConfig.availableMemory%2CserviceConfig.minInstanceCount%2CserviceConfig.maxInstanceCount%2CserviceConfig.maxInstanceRequestConcurrency%2CserviceConfig.availableCpu%2CserviceConfig.vpcConnector%2CserviceConfig.vpcConnectorEgressSettings%2Clabels had HTTP Error: 400, Could not update Cloud Run service projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6. spec.template.spec.containers[0].env: Secret environment variable overlaps non secret environment variable: SPORTS_DB_API_KEY 
+[warn] !  functions:  failed to update function projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6 
+[error] Failed to update function projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6
+[debug] [2026-03-24T07:25:02.009Z] Total Function Deployment time: 730
+[debug] [2026-03-24T07:25:02.009Z] 1 Functions Deployed
+[debug] [2026-03-24T07:25:02.009Z] 1 Functions Errored
+[debug] [2026-03-24T07:25:02.009Z] 0 Function Deployments Aborted
+[debug] [2026-03-24T07:25:02.009Z] Average Function Deployment time: 729
+[info] 
+[info] Functions deploy had errors with the following functions:
+	firebase-frameworks-scoreseeker-9dfa6:ssrscoreseeker9dfa6(us-central1)
+[debug] [2026-03-24T07:25:02.086Z] Not printing URL for HTTPS function. Typically this means it didn't match a filter or we failed deployment
+[debug] [2026-03-24T07:25:02.087Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:02.087Z] Checked if tokens are valid: true, expires at: 1774338833481
+[debug] [2026-03-24T07:25:02.087Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/scoreseeker-9dfa6/locations/us-central1/repositories/gcf-artifacts [none]
+[debug] [2026-03-24T07:25:02.501Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/scoreseeker-9dfa6/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2026-03-24T07:25:02.501Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/scoreseeker-9dfa6/locations/us-central1/repositories/gcf-artifacts {"name":"projects/scoreseeker-9dfa6/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2026-03-24T07:00:24.111174Z","updateTime":"2026-03-24T07:10:53.587607Z","mode":"STANDARD_REPOSITORY","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","action":"DELETE","condition":{"tagState":"ANY","olderThan":"86400s"}}},"sizeBytes":"1208742083","vulnerabilityScanningConfig":{"lastEnableTime":"2026-03-24T07:00:15.623900305Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true,"registryUri":"us-central1-docker.pkg.dev/scoreseeker-9dfa6/gcf-artifacts"}
+[debug] [2026-03-24T07:25:02.502Z] Functions deploy failed.
+[debug] [2026-03-24T07:25:02.502Z] {
+  "endpoint": {
+    "id": "ssrscoreseeker9dfa6",
+    "project": "scoreseeker-9dfa6",
+    "region": "us-central1",
+    "entryPoint": "ssrscoreseeker9dfa6",
+    "platform": "gcfv2",
+    "runtime": "nodejs20",
+    "httpsTrigger": {},
+    "labels": {
+      "deployment-tool": "cli-firebase"
+    },
+    "secretEnvironmentVariables": [
+      {
+        "key": "SPORTS_DB_API_KEY",
+        "secret": "SPORTS_DB_API_KEY",
+        "projectId": "scoreseeker-9dfa6",
+        "version": "1"
+      }
+    ],
+    "serviceAccount": null,
+    "ingressSettings": null,
+    "availableMemoryMb": null,
+    "timeoutSeconds": null,
+    "maxInstances": null,
+    "minInstances": null,
+    "concurrency": 80,
+    "vpc": null,
+    "environmentVariables": {
+      "SPORTS_DB_API_KEY": "871003",
+      "NEXT_PUBLIC_FIREBASE_API_KEY": "AIzaSyBX0a6JgDWeH6s1jrY_xdErbNrX51YK3RA",
+      "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": "scoreseeker-9dfa6.firebaseapp.com",
+      "NEXT_PUBLIC_FIREBASE_PROJECT_ID": "scoreseeker-9dfa6",
+      "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET": "scoreseeker-9dfa6.firebasestorage.app",
+      "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "209561162971",
+      "NEXT_PUBLIC_FIREBASE_APP_ID": "1:209561162971:web:f3044de4dd94c46f0ce8fe",
+      "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-JR1FG3RKN9",
+      "VERCEL_URL": "scoreseeker-9dfa6.web.app",
+      "__FIREBASE_FRAMEWORKS_ENTRY__": "next.js",
+      "FIREBASE_CONFIG": "{\"projectId\":\"scoreseeker-9dfa6\",\"storageBucket\":\"scoreseeker-9dfa6.firebasestorage.app\"}",
+      "GCLOUD_PROJECT": "scoreseeker-9dfa6",
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6"
+    },
+    "codebase": "firebase-frameworks-scoreseeker-9dfa6",
+    "runServiceId": "ssrscoreseeker9dfa6",
+    "cpu": 1,
+    "securityLevel": "SECURE_ALWAYS",
+    "targetedByOnly": false,
+    "hash": "598e4b9820f90565292755a3f77fb030aaa3aa16"
+  },
+  "op": "update",
+  "original": {
+    "name": "FirebaseError",
+    "children": [],
+    "context": {
+      "function": "projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6"
+    },
+    "exit": 1,
+    "message": "Failed to update function projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6",
+    "original": {
+      "name": "FirebaseError",
+      "children": [],
+      "context": {
+        "body": {
+          "error": {
+            "code": 400,
+            "message": "Could not update Cloud Run service projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6. spec.template.spec.containers[0].env: Secret environment variable overlaps non secret environment variable: SPORTS_DB_API_KEY",
+            "status": "INVALID_ARGUMENT"
+          }
+        },
+        "response": {
+          "statusCode": 400
+        }
+      },
+      "exit": 1,
+      "message": "Request to https://cloudfunctions.googleapis.com/v2/projects/scoreseeker-9dfa6/locations/us-central1/functions/ssrscoreseeker9dfa6?updateMask=name%2CbuildConfig.runtime%2CbuildConfig.entryPoint%2CbuildConfig.source.storageSource.bucket%2CbuildConfig.source.storageSource.object%2CbuildConfig.environmentVariables%2CbuildConfig.sourceToken%2CserviceConfig.environmentVariables%2CserviceConfig.secretEnvironmentVariables%2CserviceConfig.ingressSettings%2CserviceConfig.timeoutSeconds%2CserviceConfig.serviceAccountEmail%2CserviceConfig.availableMemory%2CserviceConfig.minInstanceCount%2CserviceConfig.maxInstanceCount%2CserviceConfig.maxInstanceRequestConcurrency%2CserviceConfig.availableCpu%2CserviceConfig.vpcConnector%2CserviceConfig.vpcConnectorEgressSettings%2Clabels had HTTP Error: 400, Could not update Cloud Run service projects/scoreseeker-9dfa6/locations/us-central1/services/ssrscoreseeker9dfa6. spec.template.spec.containers[0].env: Secret environment variable overlaps non secret environment variable: SPORTS_DB_API_KEY",
+      "status": 400
+    },
+    "status": 400,
+    "code": 400
+  }
+}
+[debug] [2026-03-24T07:25:02.529Z] Error: Failed to update function ssrscoreseeker9dfa6 in region us-central1
+    at C:\Users\jrud2\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:399:19
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Fabricator.updateV2Function (C:\Users\jrud2\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:388:32)
+    at async Fabricator.updateEndpoint (C:\Users\jrud2\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:155:13)
+    at async handle (C:\Users\jrud2\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:89:17)
+[error] 
+[error] Error: There was an error deploying functions

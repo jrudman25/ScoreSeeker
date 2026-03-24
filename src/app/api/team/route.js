@@ -5,15 +5,15 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('t')?.toLowerCase().trim() || '';
     const id = searchParams.get('id');
-    
+
     // If selecting a specific team, fetch the rich profile from TheSportsDB
     if (id) {
-        const apiKey = process.env.REACT_APP_SPORTS_DB_API_KEY || '871003';
+        const apiKey = process.env.SPORTS_DB_API_KEY || '123';
         try {
             const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/lookupteam.php?id=${id}`);
             const data = await res.json();
             return NextResponse.json(data);
-        } catch(e) {
+        } catch (e) {
             return NextResponse.json({ error: 'Failed to lookup team details' }, { status: 500 });
         }
     }
