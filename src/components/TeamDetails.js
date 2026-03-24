@@ -29,7 +29,7 @@ const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
                     <Typography variant="h4" component="h2">
                         {team.strTeam}{team.strTeamShort && ` (${team.strTeamShort})`}
                     </Typography>
-                    
+
                     {(team.strSport || team.strLeague) && (
                         <Typography variant="body1">
                             {team.strSport ? `Sport: ${team.strSport}` : ''}
@@ -37,12 +37,12 @@ const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
                             {team.strLeague ? team.strLeague : ''}
                         </Typography>
                     )}
-                    
+
                     {team.strLocation && (
                         <Typography variant="body1">City: {team.strLocation}</Typography>
                     )}
-                    
-                    {(team.strStadium || team.intStadiumCapacity) && (
+
+                    {(team.strStadium || (team.intStadiumCapacity && team.intStadiumCapacity > 0)) && (
                         <Typography variant="body1">
                             {team.strStadium ? `Arena: ${team.strStadium}` : ''}
                             {team.strStadium && team.intStadiumCapacity ? ' ' : ''}
@@ -53,7 +53,7 @@ const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
             </Box>
             <Typography variant="body1">
                 Description:{' '}
-                {team.strDescriptionEN 
+                {team.strDescriptionEN
                     ? (showMore ? team.strDescriptionEN : truncateDescription(team.strDescriptionEN, maxLength))
                     : "No description available."}
                 {team.strDescriptionEN && team.strDescriptionEN.length > maxLength && (
@@ -62,9 +62,6 @@ const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
                     </Button>
                 )}
             </Typography>
-            <Button variant="contained" onClick={onTimeZoneChange} sx={{ mt: 2 }}>
-                Switch to {timeZone === 'America/Los_Angeles' ? 'EST' : 'PST'}
-            </Button>
         </Paper>
     );
 };

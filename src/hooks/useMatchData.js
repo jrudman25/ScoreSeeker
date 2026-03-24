@@ -6,6 +6,7 @@ export const useMatchData = (teamId, timeZone) => {
     const [allMatches, setAllMatches] = useState([]);
     const [error, setError] = useState(null);
     const [isFetchingMatches, setIsFetchingMatches] = useState(false);
+    const [loadedTeamId, setLoadedTeamId] = useState('');
 
     // Fetch matches only when teamId changes. This fixes the previous bug 
     // where toggling timezone triggered a full API re-fetch.
@@ -14,6 +15,7 @@ export const useMatchData = (teamId, timeZone) => {
         const fetchMatches = async () => {
             if (!teamId) {
                 setAllMatches([]);
+                setLoadedTeamId('');
                 return;
             }
             setIsFetchingMatches(true);
@@ -39,8 +41,12 @@ export const useMatchData = (teamId, timeZone) => {
                 });
 
                 setAllMatches(combined);
+                setLoadedTeamId(teamId);
             } catch (err) {
-                if (isMounted) setError('Error fetching matches: ' + err.message);
+                if (isMounted) {
+                    setError('Error fetching matches: ' + err.message);
+                    setLoadedTeamId(teamId); // Ensure readiness even on error, so UI stops spinning
+                }
             } finally {
                 if (isMounted) setIsFetchingMatches(false);
             }
@@ -86,5 +92,7 @@ export const useMatchData = (teamId, timeZone) => {
         return { pastMatchInfo: past, currentMatchInfo: current, upcomingMatchInfo: upcoming };
     }, [allMatches, timeZone]);
 
-    return { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error, isFetchingMatches };
+    const isDataReady = loadedTeamId === teamId && !isFetchingMatches;
+
+    return { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error, isFetchingMatches, isDataReady };
 };

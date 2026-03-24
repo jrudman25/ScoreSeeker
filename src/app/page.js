@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ThemeProvider, createTheme, CssBaseline, Container, Button, Typography, CircularProgress } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, Container, Button, Typography, CircularProgress, AppBar, Toolbar, Box, Paper } from '@mui/material';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import TeamSearch from '../components/TeamSearch';
 import TeamDetails from '../components/TeamDetails';
 import MatchList from '../components/MatchList';
@@ -14,7 +15,9 @@ const SportsMusicApp = () => {
     const [darkMode, setDarkMode] = useState(false);
 
     const { teamSearchResult, teamId, teamOptions, error: searchError, loading, fetchingOptions, fetchTeams, searchTeam } = useTeamSearch();
-    const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError, isFetchingMatches } = useMatchData(teamId, timeZone);
+    const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError, isDataReady } = useMatchData(teamId, timeZone);
+
+    const isLoading = loading || (teamId && !isDataReady);
 
     const toggleDarkMode = () => setDarkMode(!darkMode);
 
@@ -33,38 +36,75 @@ const SportsMusicApp = () => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container>
-                <Button
-                    variant="contained"
-                    onClick={toggleDarkMode}
-                    sx={{ position: 'fixed', top: 20, right: 20 }}
-                >
-                    {darkMode ? 'Light Mode' : 'Dark Mode'}
-                </Button>
-                <Typography variant="h2" component="h1" gutterBottom sx={{ mt: 4 }}>
-                    ScoreSeeker
-                </Typography>
-                <TeamSearch 
-                    onSearch={searchTeam} 
-                    teamOptions={teamOptions} 
-                    loading={fetchingOptions} 
-                    fetchTeams={fetchTeams} 
+
+            <AppBar position="static" color="primary" enableColorOnDark elevation={2}>
+                <Toolbar>
+                    <Typography variant="h5" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                        <AudiotrackIcon sx={{ mr: 1 }} /> ScoreSeeker
+                    </Typography>
+
+                    <Button color="inherit" onClick={handleTimeZoneChange} sx={{ mr: 2 }}>
+                        {timeZone === 'America/Los_Angeles' ? 'PST' : 'EST'}
+                    </Button>
+                    <Button color="inherit" onClick={toggleDarkMode}>
+                        {darkMode ? 'Light Mode' : 'Dark Mode'}
+                    </Button>
+                </Toolbar>
+            </AppBar>
+
+            <Container sx={{ pt: 4, pb: 8 }}>
+
+                <TeamSearch
+                    onSearch={searchTeam}
+                    teamOptions={teamOptions}
+                    loading={fetchingOptions}
+                    fetchTeams={fetchTeams}
                 />
                 {error && (
                     <Typography color="error" variant="body1">
                         {error}
                     </Typography>
                 )}
-                {teamSearchResult && !loading && (
-                    <TeamDetails
-                        team={teamSearchResult}
-                        timeZone={timeZone}
-                        onTimeZoneChange={handleTimeZoneChange}
-                    />
+
+                {isLoading && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
+                        <CircularProgress size={60} />
+                    </Box>
                 )}
-                {isFetchingMatches && <CircularProgress sx={{ display: 'block', mt: 4 }} />}
-                {!isFetchingMatches && !loading && teamSearchResult && (
-                    <>
+
+                {/* Hero / Empty State */}
+                {!teamSearchResult && !isLoading && !error && (
+                    <Paper
+                        sx={{
+                            p: { xs: 4, md: 8 },
+                            mt: 6,
+                            borderRadius: 3,
+                            textAlign: 'center',
+                            background: darkMode ? 'linear-gradient(135deg, #1e1e1e 0%, #121212 100%)' : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                        }}
+                        elevation={darkMode ? 1 : 4}
+                    >
+                        <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold' }}>
+                            Welcome to ScoreSeeker!
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" paragraph sx={{ mb: 4 }}>
+                            Search for any professional sports team across the globe to instantly view their live, past, and upcoming match schedules.
+                        </Typography>
+
+                        <Box sx={{ display: 'inline-block', textAlign: 'left', p: 3, backgroundColor: darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.5)', borderRadius: 2 }}>
+                            <Typography variant="body1" sx={{ mb: 1, fontSize: '1.1rem' }}>📅 <strong>Schedules:</strong> Comprehensive match histories</Typography>
+                            <Typography variant="body1" sx={{ mb: 1, fontSize: '1.1rem' }}>🎵 <strong>Audio:</strong> Hear unique, algorithmic theme songs based on game scores</Typography>
+                            <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>🌎 <strong>Global:</strong> Search instantly from a database of over 14,000 teams</Typography>
+                        </Box>
+                    </Paper>
+                )}
+
+                {teamSearchResult && !isLoading && (
+                    <Box sx={{ mt: 5 }}>
+                        <TeamDetails
+                            team={teamSearchResult}
+                            timeZone={timeZone}
+                        />
                         <MatchList
                             title="Past Matches"
                             matches={pastMatchInfo}
@@ -90,7 +130,7 @@ const SportsMusicApp = () => {
                             darkMode={darkMode}
                             disableAudio={true}
                         />
-                    </>
+                    </Box>
                 )}
             </Container>
         </ThemeProvider>
