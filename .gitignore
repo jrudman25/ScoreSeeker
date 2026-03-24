@@ -23,3 +23,7 @@ yarn-error.log*
 .firebaserc
 /.firebase
 /.idea
+/.next
+/.vscode
+*.md
+!README.md
