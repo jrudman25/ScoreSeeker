@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 
 // Convert string to numeric seed
-function getSeedFromString(str) {
+export function getSeedFromString(str) {
     let hash = 0;
     if (!str || str.length === 0) return hash;
     for (let i = 0; i < str.length; i++) {
