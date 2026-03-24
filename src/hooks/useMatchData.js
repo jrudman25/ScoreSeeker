@@ -5,6 +5,7 @@ import { isLive } from '../utils/helpers';
 export const useMatchData = (teamId, timeZone) => {
     const [allMatches, setAllMatches] = useState([]);
     const [error, setError] = useState(null);
+    const [isFetchingMatches, setIsFetchingMatches] = useState(false);
 
     // Fetch matches only when teamId changes. This fixes the previous bug 
     // where toggling timezone triggered a full API re-fetch.
@@ -15,6 +16,7 @@ export const useMatchData = (teamId, timeZone) => {
                 setAllMatches([]);
                 return;
             }
+            setIsFetchingMatches(true);
             try {
                 const res = await fetch(`/api/matches?id=${encodeURIComponent(teamId)}`);
                 const data = await res.json();
@@ -39,6 +41,8 @@ export const useMatchData = (teamId, timeZone) => {
                 setAllMatches(combined);
             } catch (err) {
                 if (isMounted) setError('Error fetching matches: ' + err.message);
+            } finally {
+                if (isMounted) setIsFetchingMatches(false);
             }
         };
 
@@ -82,5 +86,5 @@ export const useMatchData = (teamId, timeZone) => {
         return { pastMatchInfo: past, currentMatchInfo: current, upcomingMatchInfo: upcoming };
     }, [allMatches, timeZone]);
 
-    return { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error };
+    return { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error, isFetchingMatches };
 };

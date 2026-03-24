@@ -1,36 +1,13 @@
 /**
  * MatchList.js
  * Lists a team's matches
- * @version 2025.08.06
+ * @version 2026.03.23
  */
 import React from 'react';
 import { Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
-import * as Tone from 'tone';
+import { playMatchTheme } from '../utils/musicGenerator';
 
-const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode }) => {
-
-    const playSound = (match) => {
-        try {
-            const synth = new Tone.Synth().toDestination();
-            const now = Tone.now();
-            if (match.intHomeScore > match.intAwayScore) {
-                synth.triggerAttackRelease("C4", "8n", now);
-                synth.triggerAttackRelease("E4", "8n", now + 0.5);
-            }
-            else if (match.intHomeScore < match.intAwayScore) {
-                synth.triggerAttackRelease("G4", "8n", now);
-                synth.triggerAttackRelease("B4", "8n", now + 0.5);
-            }
-            else {
-                synth.triggerAttackRelease("A4", "8n", now);
-                synth.triggerAttackRelease("C5", "8n", now + 0.5);
-            }
-        }
-        catch(error){
-            console.warn("Audio playback error:", error);
-        }
-    };
-
+const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode, disableAudio }) => {
     return (
         <Paper sx={{ p: 3, mb: 4 }}>
             <Typography variant="h5" component="h2" gutterBottom>
@@ -38,24 +15,26 @@ const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode
             </Typography>
             {matches.length > 0 ? (
                 <List>
-                    {matches.map((match, index) => (
-                        <ListItem key={index}
+                    {matches.map((match) => (
+                        <ListItem key={match.idEvent}
                                   divider
-                                  onClick={() => playSound(match)}
+                                  onClick={disableAudio ? undefined : () => playMatchTheme(match)}
                                   sx={{
-                                      cursor: 'pointer',
+                                      cursor: disableAudio ? 'default' : 'pointer',
                                       transition: 'background-color 0.3s',
                                       '&:hover': {
                                           backgroundColor: darkMode ? '#333' : '#f0f0f0',
                                       },
-                                      '&:active': {
-                                          backgroundColor: darkMode ? '#555' : '#ddd',
-                                      },
+                                      ...(disableAudio ? {} : {
+                                          '&:active': {
+                                              backgroundColor: darkMode ? '#555' : '#ddd',
+                                          }
+                                      })
                                   }}>
                             <ListItemText
                                     primary={
                                         <>
-                                            {match.strEvent} 🔊
+                                            {match.strEvent} {!disableAudio && '🔊'}
                                         </>
                                     }
                                 secondary={

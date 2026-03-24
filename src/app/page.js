@@ -14,7 +14,7 @@ const SportsMusicApp = () => {
     const [darkMode, setDarkMode] = useState(false);
 
     const { teamSearchResult, teamId, error: searchError, loading, searchTeam } = useTeamSearch();
-    const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError } = useMatchData(teamId, timeZone);
+    const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError, isFetchingMatches } = useMatchData(teamId, timeZone);
 
     const toggleDarkMode = () => setDarkMode(!darkMode);
 
@@ -45,43 +45,49 @@ const SportsMusicApp = () => {
                     ScoreSeeker
                 </Typography>
                 <TeamSearch onSearch={searchTeam} />
-                {loading && <CircularProgress />}
+                {loading && <CircularProgress sx={{ display: 'block', mt: 4 }} />}
                 {error && (
                     <Typography color="error" variant="body1">
                         {error}
                     </Typography>
                 )}
-                {teamSearchResult && (
+                {teamSearchResult && !loading && (
                     <TeamDetails
                         team={teamSearchResult}
                         timeZone={timeZone}
                         onTimeZoneChange={handleTimeZoneChange}
                     />
                 )}
-                <MatchList
-                    title="Past Matches"
-                    matches={pastMatchInfo}
-                    convertTime={convertTimeWrapper}
-                    isScoreValid={isScoreValid}
-                    isLive={isLive}
-                    darkMode={darkMode}
-                />
-                <MatchList
-                    title="Live Now"
-                    matches={currentMatchInfo}
-                    convertTime={convertTimeWrapper}
-                    isScoreValid={isScoreValid}
-                    isLive={isLive}
-                    darkMode={darkMode}
-                />
-                <MatchList
-                    title="Upcoming Matches"
-                    matches={upcomingMatchInfo}
-                    convertTime={convertTimeWrapper}
-                    isScoreValid={isScoreValid}
-                    isLive={isLive}
-                    darkMode={darkMode}
-                />
+                {isFetchingMatches && <CircularProgress sx={{ display: 'block', mt: 4 }} />}
+                {!isFetchingMatches && !loading && teamSearchResult && (
+                    <>
+                        <MatchList
+                            title="Past Matches"
+                            matches={pastMatchInfo}
+                            convertTime={convertTimeWrapper}
+                            isScoreValid={isScoreValid}
+                            isLive={isLive}
+                            darkMode={darkMode}
+                        />
+                        <MatchList
+                            title="Live Now"
+                            matches={currentMatchInfo}
+                            convertTime={convertTimeWrapper}
+                            isScoreValid={isScoreValid}
+                            isLive={isLive}
+                            darkMode={darkMode}
+                        />
+                        <MatchList
+                            title="Upcoming Matches"
+                            matches={upcomingMatchInfo}
+                            convertTime={convertTimeWrapper}
+                            isScoreValid={isScoreValid}
+                            isLive={isLive}
+                            darkMode={darkMode}
+                            disableAudio={true}
+                        />
+                    </>
+                )}
             </Container>
         </ThemeProvider>
     );
