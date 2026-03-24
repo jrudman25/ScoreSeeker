@@ -1,33 +1,55 @@
 /**
  * TeamSearch.js
- * Search for teams
- * @version 2025.02.10
+ * Search for teams with autocomplete dropdown
+ * @version 2026.03.23
  */
-import React, { useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Autocomplete, TextField, Box, CircularProgress } from '@mui/material';
 
-const TeamSearch = ({ onSearch }) => {
-    const [teamName, setTeamName] = useState('');
+const TeamSearch = ({ onSearch, teamOptions, loading, fetchTeams }) => {
+    const [inputValue, setInputValue] = useState('');
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            onSearch(teamName);
-        }
-    };
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (inputValue) {
+                fetchTeams(inputValue);
+            }
+        }, 500); // Debounce to prevent spamming the API on every keystroke
+        return () => clearTimeout(timeoutId);
+    }, [inputValue, fetchTeams]);
 
     return (
-        <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
-            <TextField
-                label="Enter Team Name"
-                variant="outlined"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                fullWidth
+        <Box sx={{ mb: 4 }}>
+            <Autocomplete
+                options={teamOptions}
+                getOptionLabel={(option) => `${option.strTeam} (${option.strSport} - ${option.strLeague})`}
+                loading={loading}
+                filterOptions={(x) => x} // Disable built-in filtering, API handles it
+                onChange={(event, newValue) => {
+                    if (newValue) {
+                        onSearch(newValue);
+                    }
+                }}
+                onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Search for a team..."
+                        variant="outlined"
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <React.Fragment>
+                                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                    {params.InputProps.endAdornment}
+                                </React.Fragment>
+                            ),
+                        }}
+                    />
+                )}
             />
-            <Button variant="contained" onClick={() => onSearch(teamName)}>
-                Search
-            </Button>
         </Box>
     );
 };

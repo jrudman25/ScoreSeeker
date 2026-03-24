@@ -1,20 +1,39 @@
 import { NextResponse } from 'next/server';
+import teamsData from '../../../data/teams.json';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
-    const teamName = searchParams.get('t');
+    const query = searchParams.get('t')?.toLowerCase().trim() || '';
+    const id = searchParams.get('id');
     
-    if (!teamName) {
-        return NextResponse.json({ error: 'Team name is required' }, { status: 400 });
+    // If selecting a specific team, fetch the rich profile from TheSportsDB
+    if (id) {
+        const apiKey = process.env.REACT_APP_SPORTS_DB_API_KEY || '871003';
+        try {
+            const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/lookupteam.php?id=${id}`);
+            const data = await res.json();
+            return NextResponse.json(data);
+        } catch(e) {
+            return NextResponse.json({ error: 'Failed to lookup team details' }, { status: 500 });
+        }
     }
 
-    const apiKey = process.env.REACT_APP_SPORTS_DB_API_KEY;
+    if (!query || query.length < 2) {
+        return NextResponse.json({ teams: [] });
+    }
 
     try {
-        const response = await fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/searchteams.php?t=${teamName}`);
-        const data = await response.json();
-        return NextResponse.json(data);
+        // Perform an instant substring (fuzzy) search against the entire cached global db
+        const matchedTeams = teamsData.filter(team => {
+            const name = (team.strTeam || '').toLowerCase();
+            const alt = (team.strTeamAlternate || '').toLowerCase();
+            return name.includes(query) || alt.includes(query);
+        });
+
+        // Limit results to 50 to keep the Autocomplete speedy and network payload tiny
+        return NextResponse.json({ teams: matchedTeams.slice(0, 50) });
     } catch (error) {
-        return NextResponse.json({ error: 'Failed to fetch team' }, { status: 500 });
+        console.error("Local search error:", error);
+        return NextResponse.json({ error: 'Failed to search local team registry' }, { status: 500 });
     }
 }

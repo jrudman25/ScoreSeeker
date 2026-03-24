@@ -13,7 +13,7 @@ const SportsMusicApp = () => {
     const [timeZone, setTimeZone] = useState('America/Los_Angeles');
     const [darkMode, setDarkMode] = useState(false);
 
-    const { teamSearchResult, teamId, error: searchError, loading, searchTeam } = useTeamSearch();
+    const { teamSearchResult, teamId, teamOptions, error: searchError, loading, fetchingOptions, fetchTeams, searchTeam } = useTeamSearch();
     const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError, isFetchingMatches } = useMatchData(teamId, timeZone);
 
     const toggleDarkMode = () => setDarkMode(!darkMode);
@@ -44,8 +44,12 @@ const SportsMusicApp = () => {
                 <Typography variant="h2" component="h1" gutterBottom sx={{ mt: 4 }}>
                     ScoreSeeker
                 </Typography>
-                <TeamSearch onSearch={searchTeam} />
-                {loading && <CircularProgress sx={{ display: 'block', mt: 4 }} />}
+                <TeamSearch 
+                    onSearch={searchTeam} 
+                    teamOptions={teamOptions} 
+                    loading={fetchingOptions} 
+                    fetchTeams={fetchTeams} 
+                />
                 {error && (
                     <Typography color="error" variant="body1">
                         {error}

@@ -24,20 +24,39 @@ const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
     return (
         <Paper sx={{ p: 3, mb: 4 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                <Avatar src={team.strFanart1} alt={`${team.strTeam} Badge`} sx={{ width: 100, height: 100 }} />
+                <Avatar src={team.strBadge || team.strFanart1} alt={`${team.strTeam} Badge`} sx={{ width: 100, height: 100 }} />
                 <Box>
                     <Typography variant="h4" component="h2">
-                        {team.strTeam} ({team.strTeamShort})
+                        {team.strTeam}{team.strTeamShort && ` (${team.strTeamShort})`}
                     </Typography>
-                    <Typography variant="body1">Sport: {team.strSport} ({team.strLeague})</Typography>
-                    <Typography variant="body1">City: {team.strLocation}</Typography>
-                    <Typography variant="body1">Arena: {team.strStadium} (Capacity: {team.intStadiumCapacity})</Typography>
+                    
+                    {(team.strSport || team.strLeague) && (
+                        <Typography variant="body1">
+                            {team.strSport ? `Sport: ${team.strSport}` : ''}
+                            {team.strSport && team.strLeague ? ' - ' : ''}
+                            {team.strLeague ? team.strLeague : ''}
+                        </Typography>
+                    )}
+                    
+                    {team.strLocation && (
+                        <Typography variant="body1">City: {team.strLocation}</Typography>
+                    )}
+                    
+                    {(team.strStadium || team.intStadiumCapacity) && (
+                        <Typography variant="body1">
+                            {team.strStadium ? `Arena: ${team.strStadium}` : ''}
+                            {team.strStadium && team.intStadiumCapacity ? ' ' : ''}
+                            {team.intStadiumCapacity ? `(Capacity: ${team.intStadiumCapacity})` : ''}
+                        </Typography>
+                    )}
                 </Box>
             </Box>
             <Typography variant="body1">
                 Description:{' '}
-                {showMore ? team.strDescriptionEN : truncateDescription(team.strDescriptionEN, maxLength)}
-                {team.strDescriptionEN.length > maxLength && (
+                {team.strDescriptionEN 
+                    ? (showMore ? team.strDescriptionEN : truncateDescription(team.strDescriptionEN, maxLength))
+                    : "No description available."}
+                {team.strDescriptionEN && team.strDescriptionEN.length > maxLength && (
                     <Button onClick={toggleDesc} color="primary">
                         {showMore ? 'Read Less' : 'Read More'}
                     </Button>
