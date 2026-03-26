@@ -19,7 +19,7 @@ export const useTeamSearch = () => {
         try {
             const response = await fetch(`/api/team?t=${encodeURIComponent(teamName)}`);
             const data = await response.json();
-            
+
             if (response.ok && data.teams) {
                 setTeamOptions(data.teams);
             } else {
@@ -44,7 +44,7 @@ export const useTeamSearch = () => {
             } else {
                 setError("Team details not found");
             }
-        } catch(e) {
+        } catch (_e) {
             setError("Failed to fetch team details");
         } finally {
             setTeamOptions([]);

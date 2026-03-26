@@ -3,7 +3,9 @@ import * as Tone from 'tone';
 // Convert string to numeric seed
 export function getSeedFromString(str) {
     let hash = 0;
-    if (!str || str.length === 0) return hash;
+    if (!str || str.length === 0) {
+        return hash;
+    }
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
@@ -24,13 +26,19 @@ let activeSequence = null;
 let activeSynth = null;
 let stopEventId = null;
 
-export async function playMatchTheme(match) {
+export async function playMatchTheme(match, onStop) {
     try {
         await Tone.start();
 
         // 1. Safely teardown any currently playing song
         if (activeSequence) {
-            activeSequence.stop();
+            try {
+                // Spamming clicks can cause microscopic floating-point RangeErrors 
+                // in the Tone.js scheduler (e.g., -9.094947e-13 < 0).
+                activeSequence.stop();
+            } catch (_e) {
+                // Safely swallow audio-clock math errors during rapid teardown
+            }
             activeSequence.dispose();
             activeSequence = null;
         }
@@ -38,7 +46,7 @@ export async function playMatchTheme(match) {
             Tone.Transport.clear(stopEventId);
             stopEventId = null;
         }
-        
+
         Tone.Transport.stop();
         Tone.Transport.cancel(); // Clear all scheduled events on the timeline
 
@@ -64,7 +72,9 @@ export async function playMatchTheme(match) {
 
         // 4. Determine Tempo
         let bpm = 80 + (totalScore * 8); // 80 base + 8 per goal
-        if (bpm > 180) bpm = 180;
+        if (bpm > 180) {
+            bpm = 180;
+        }
         Tone.Transport.bpm.value = bpm;
 
         // 5. Determine Instrumentation (Blowout vs Close Game)
@@ -83,13 +93,13 @@ export async function playMatchTheme(match) {
         const melody = [];
         const rhythms = ["8n", "4n", "8n.", "16n"];
         let timeAccumulator = 0;
-        
+
         // Generate exactly 8 notes
         for (let i = 0; i < 8; i++) {
             // LCG Pseudo-random math
             currentSeed = (currentSeed * 16807) % 2147483647;
             const rand1 = currentSeed / 2147483647;
-            
+
             currentSeed = (currentSeed * 16807) % 2147483647;
             const rand2 = currentSeed / 2147483647;
 
@@ -101,7 +111,7 @@ export async function playMatchTheme(match) {
             const duration = rhythms[rhythmIndex];
 
             melody.push({ time: timeAccumulator, note: note, duration: duration });
-            
+
             // Advance the time
             timeAccumulator += Tone.Time(duration).toSeconds();
         }
@@ -110,21 +120,38 @@ export async function playMatchTheme(match) {
         const root = scale[0];
         const third = scale[2];
         const fifth = scale[4];
-        melody.push({ 
-            time: timeAccumulator, 
-            note: [root, third, fifth], 
-            duration: "2n" 
+        melody.push({
+            time: timeAccumulator,
+            note: [root, third, fifth],
+            duration: "2n"
         });
 
         // 7. Schedule playback
         activeSequence = new Tone.Part((time, value) => {
             activeSynth.triggerAttackRelease(value.note, value.duration, time);
-        }, melody).start(0);
+        }, melody)
+        activeSequence.loop = false;
+        activeSequence.start(0);
 
         // Schedule the transport to stop cleanly
         const endTime = timeAccumulator + Tone.Time("2n").toSeconds() + 0.5;
         stopEventId = Tone.Transport.schedule((time) => {
-            Tone.Transport.stop();
+            if (activeSequence) {
+                try {
+                    activeSequence.stop(time);
+                } catch (_e) {
+                    // Safely swallow audio-clock math errors during rapid teardown
+                }
+            }
+            // Use pause() instead of stop() so the playhead doesn't snap to 0
+            // and accidentally re-trigger the first note of the Part!
+            Tone.Transport.pause(time);
+            if (onStop) {
+                // To keep state cleanly in sync, theoretically schedule the callback exactly at transport halt
+                Tone.Draw.schedule(() => {
+                    onStop();
+                }, time);
+            }
         }, endTime);
 
         // 8. Play

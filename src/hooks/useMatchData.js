@@ -22,12 +22,14 @@ export const useMatchData = (teamId, timeZone) => {
             try {
                 const res = await fetch(`/api/matches?id=${encodeURIComponent(teamId)}`);
                 const data = await res.json();
-                
+
                 if (!res.ok) {
                     throw new Error(data.error || 'Failed to fetch matches');
                 }
 
-                if (!isMounted) return;
+                if (!isMounted) {
+                    return;
+                }
 
                 const { pastData, upcomingData } = data;
 
@@ -48,7 +50,9 @@ export const useMatchData = (teamId, timeZone) => {
                     setLoadedTeamId(teamId); // Ensure readiness even on error, so UI stops spinning
                 }
             } finally {
-                if (isMounted) setIsFetchingMatches(false);
+                if (isMounted) {
+                    setIsFetchingMatches(false);
+                }
             }
         };
 

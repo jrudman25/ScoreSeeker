@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ThemeProvider, createTheme, CssBaseline, Container, Button, Typography, CircularProgress, AppBar, Toolbar, Box, Paper } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, Container, Typography, CircularProgress, AppBar, Toolbar, Box, Paper, IconButton, Menu, MenuItem, Divider } from '@mui/material';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import SettingsIcon from '@mui/icons-material/Settings';
 import TeamSearch from '../components/TeamSearch';
 import TeamDetails from '../components/TeamDetails';
 import MatchList from '../components/MatchList';
 import { convertTime, isScoreValid, isLive } from '../utils/helpers';
 import { useTeamSearch } from '../hooks/useTeamSearch';
 import { useMatchData } from '../hooks/useMatchData';
+import { playMatchTheme } from '../utils/musicGenerator';
 
 const SportsMusicApp = () => {
     const [timeZone, setTimeZone] = useState('America/Los_Angeles');
@@ -19,17 +21,43 @@ const SportsMusicApp = () => {
 
     const isLoading = loading || (teamId && !isDataReady);
 
-    const toggleDarkMode = () => setDarkMode(!darkMode);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [playingMatchId, setPlayingMatchId] = useState(null);
+    
+    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleMenuClose = () => setAnchorEl(null);
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+        handleMenuClose();
+    };
+
+    const timeZonesList = [
+        { id: 'America/New_York', label: 'EST / EDT (New York)' },
+        { id: 'America/Chicago', label: 'CST / CDT (Chicago)' },
+        { id: 'America/Denver', label: 'MST / MDT (Denver)' },
+        { id: 'America/Los_Angeles', label: 'PST / PDT (Los Angeles)' },
+        { id: 'Europe/London', label: 'GMT / BST (London)' },
+        { id: 'UTC', label: 'UTC' }
+    ];
 
     const theme = createTheme({
         palette: { mode: darkMode ? 'dark' : 'light' },
     });
 
-    const handleTimeZoneChange = () => {
-        setTimeZone((prev) => prev === 'America/Los_Angeles' ? 'America/New_York' : 'America/Los_Angeles');
+    const handleTimeZoneChange = (tz) => {
+        setTimeZone(tz);
+        handleMenuClose();
     };
 
     const convertTimeWrapper = (ts) => convertTime(ts, timeZone);
+
+    const handlePlayAudio = (match) => {
+        setPlayingMatchId(match.idEvent);
+        playMatchTheme(match, () => {
+            setPlayingMatchId((prev) => (prev === match.idEvent ? null : prev));
+        });
+    };
 
     const error = searchError || matchError;
 
@@ -43,12 +71,34 @@ const SportsMusicApp = () => {
                         <AudiotrackIcon sx={{ mr: 1 }} /> ScoreSeeker
                     </Typography>
 
-                    <Button color="inherit" onClick={handleTimeZoneChange} sx={{ mr: 2 }}>
-                        {timeZone === 'America/Los_Angeles' ? 'PST' : 'EST'}
-                    </Button>
-                    <Button color="inherit" onClick={toggleDarkMode}>
-                        {darkMode ? 'Light Mode' : 'Dark Mode'}
-                    </Button>
+                    <IconButton color="inherit" onClick={handleMenuOpen}>
+                        <SettingsIcon />
+                    </IconButton>
+
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    >
+                        <MenuItem onClick={toggleDarkMode}>
+                            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem disabled sx={{ opacity: 1, fontWeight: 'bold', color: 'text.secondary' }}>
+                            Time Zone
+                        </MenuItem>
+                        {timeZonesList.map(tz => (
+                            <MenuItem 
+                                key={tz.id} 
+                                selected={timeZone === tz.id} 
+                                onClick={() => handleTimeZoneChange(tz.id)}
+                            >
+                                {timeZone === tz.id ? '✓ ' : '\u00A0\u00A0\u00A0'} {tz.label}
+                            </MenuItem>
+                        ))}
+                    </Menu>
                 </Toolbar>
             </AppBar>
 
@@ -103,7 +153,6 @@ const SportsMusicApp = () => {
                     <Box sx={{ mt: 5 }}>
                         <TeamDetails
                             team={teamSearchResult}
-                            timeZone={timeZone}
                         />
                         <MatchList
                             title="Past Matches"
@@ -112,6 +161,8 @@ const SportsMusicApp = () => {
                             isScoreValid={isScoreValid}
                             isLive={isLive}
                             darkMode={darkMode}
+                            playingMatchId={playingMatchId}
+                            onPlayAudio={handlePlayAudio}
                         />
                         <MatchList
                             title="Live Now"
@@ -120,6 +171,9 @@ const SportsMusicApp = () => {
                             isScoreValid={isScoreValid}
                             isLive={isLive}
                             darkMode={darkMode}
+                            disableAudio={true}
+                            playingMatchId={playingMatchId}
+                            onPlayAudio={handlePlayAudio}
                         />
                         <MatchList
                             title="Upcoming Matches"
@@ -129,6 +183,8 @@ const SportsMusicApp = () => {
                             isLive={isLive}
                             darkMode={darkMode}
                             disableAudio={true}
+                            playingMatchId={playingMatchId}
+                            onPlayAudio={handlePlayAudio}
                         />
                     </Box>
                 )}

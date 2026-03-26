@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { Typography, Button, Paper, Box, Avatar } from '@mui/material';
 
-const TeamDetails = ({ team, timeZone, onTimeZoneChange }) => {
+const TeamDetails = ({ team }) => {
     const [showMore, setShowMore] = useState(false);
     const maxLength = 500;
 

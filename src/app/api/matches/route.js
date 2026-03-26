@@ -20,7 +20,7 @@ export async function GET(request) {
         const upcomingData = await upcomingRes.json();
 
         return NextResponse.json({ pastData, upcomingData });
-    } catch (error) {
+    } catch (_e) {
         return NextResponse.json({ error: 'Failed to fetch matches' }, { status: 500 });
     }
 }

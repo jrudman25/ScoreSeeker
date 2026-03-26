@@ -3,6 +3,7 @@
  * from TheSportsDB and compile them into a static JSON file.
  * This runs at build time or manually to guarantee perfect fuzzy autocomplete.
  */
+/* eslint-disable no-console, no-return-assign */
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
@@ -20,7 +21,7 @@ function fetchJson(url) {
             res.on('end', () => {
                 try {
                     resolve(JSON.parse(data));
-                } catch (e) {
+                } catch (_e) {
                     resolve(null);
                 }
             });

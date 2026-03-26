@@ -13,7 +13,7 @@ export async function GET(request) {
             const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/lookupteam.php?id=${id}`);
             const data = await res.json();
             return NextResponse.json(data);
-        } catch (e) {
+        } catch (_e) {
             return NextResponse.json({ error: 'Failed to lookup team details' }, { status: 500 });
         }
     }
