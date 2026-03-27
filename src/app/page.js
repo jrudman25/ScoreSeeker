@@ -1,20 +1,66 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, createTheme, CssBaseline, Container, Typography, CircularProgress, AppBar, Toolbar, Box, Paper, IconButton, Menu, MenuItem, Divider } from '@mui/material';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TeamSearch from '../components/TeamSearch';
 import TeamDetails from '../components/TeamDetails';
 import MatchList from '../components/MatchList';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { convertTime, isScoreValid, isLive } from '../utils/helpers';
 import { useTeamSearch } from '../hooks/useTeamSearch';
 import { useMatchData } from '../hooks/useMatchData';
 import { playMatchTheme } from '../utils/musicGenerator';
 
+const timeZonesList = [
+    { id: 'America/New_York', label: 'EST / EDT (New York)' },
+    { id: 'America/Chicago', label: 'CST / CDT (Chicago)' },
+    { id: 'America/Denver', label: 'MST / MDT (Denver)' },
+    { id: 'America/Los_Angeles', label: 'PST / PDT (Los Angeles)' },
+    { id: 'Europe/London', label: 'GMT / BST (London)' },
+    { id: 'UTC', label: 'UTC' }
+];
+
+const getDefaultTimeZone = () => {
+    try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Los_Angeles';
+    } catch (_e) {
+        return 'America/Los_Angeles';
+    }
+};
+
 const SportsMusicApp = () => {
-    const [timeZone, setTimeZone] = useState('America/Los_Angeles');
-    const [darkMode, setDarkMode] = useState(false);
+    const [timeZone, setTimeZone] = useState(() => {
+        if (typeof window === 'undefined') {
+            return getDefaultTimeZone();
+        }
+        try {
+            return localStorage.getItem('scoreseeker_timeZone') || getDefaultTimeZone();
+        } catch (_e) {
+            return getDefaultTimeZone();
+        }
+    });
+    const [darkMode, setDarkMode] = useState(() => {
+        if (typeof window === 'undefined') {
+            return false;
+        }
+        try {
+            return localStorage.getItem('scoreseeker_darkMode') === 'true';
+        } catch (_e) {
+            return false;
+        }
+    });
+
+    // Persist preferences whenever they change
+    useEffect(() => {
+        try {
+            localStorage.setItem('scoreseeker_darkMode', String(darkMode));
+            localStorage.setItem('scoreseeker_timeZone', timeZone);
+        } catch (_e) {
+            // localStorage unavailable
+        }
+    }, [darkMode, timeZone]);
 
     const { teamSearchResult, teamId, teamOptions, error: searchError, loading, fetchingOptions, fetchTeams, searchTeam } = useTeamSearch();
     const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError, isDataReady } = useMatchData(teamId, timeZone);
@@ -28,22 +74,13 @@ const SportsMusicApp = () => {
     const handleMenuClose = () => setAnchorEl(null);
 
     const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
+        setDarkMode(prev => !prev);
         handleMenuClose();
     };
 
-    const timeZonesList = [
-        { id: 'America/New_York', label: 'EST / EDT (New York)' },
-        { id: 'America/Chicago', label: 'CST / CDT (Chicago)' },
-        { id: 'America/Denver', label: 'MST / MDT (Denver)' },
-        { id: 'America/Los_Angeles', label: 'PST / PDT (Los Angeles)' },
-        { id: 'Europe/London', label: 'GMT / BST (London)' },
-        { id: 'UTC', label: 'UTC' }
-    ];
-
-    const theme = createTheme({
+    const theme = useMemo(() => createTheme({
         palette: { mode: darkMode ? 'dark' : 'light' },
-    });
+    }), [darkMode]);
 
     const handleTimeZoneChange = (tz) => {
         setTimeZone(tz);
@@ -103,6 +140,7 @@ const SportsMusicApp = () => {
             </AppBar>
 
             <Container sx={{ pt: 4, pb: 8 }}>
+            <ErrorBoundary>
 
                 <TeamSearch
                     onSearch={searchTeam}
@@ -188,6 +226,7 @@ const SportsMusicApp = () => {
                         />
                     </Box>
                 )}
+            </ErrorBoundary>
             </Container>
         </ThemeProvider>
     );

@@ -19,7 +19,9 @@ const eslintConfig = defineConfig([
 
         // Config file ignores
         '*.config.js',
-        '*.config.mjs'
+        '*.config.mjs',
+        'jest.setup.js',
+        '**/*.json'
     ]),
 
     // Custom Rules for Best Practices
