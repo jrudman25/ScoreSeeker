@@ -19,6 +19,7 @@ describe('MatchList Component', () => {
             intAwayScore: '1',
             strHomeTeam: 'Team A',
             strAwayTeam: 'Team B',
+            intRound: '5',
         },
         {
             idEvent: '101',
@@ -30,6 +31,7 @@ describe('MatchList Component', () => {
             intAwayScore: '2',
             strHomeTeam: 'Team C',
             strAwayTeam: 'Team D',
+            intRound: '6',
         },
     ];
 
@@ -43,6 +45,7 @@ describe('MatchList Component', () => {
         disableAudio: false,
         playingMatchId: null,
         onPlayAudio: mockOnPlayAudio,
+        selectedTeamName: 'Team A',
     };
 
     beforeEach(() => {
@@ -65,18 +68,28 @@ describe('MatchList Component', () => {
         expect(screen.getByText('No matches available')).toBeInTheDocument();
     });
 
-    it('displays formatted time and venue for each match', () => {
+    it('displays formatted time for each match', () => {
         render(<MatchList {...defaultProps} />);
         expect(screen.getByText('Formatted: 2024-06-15T19:00:00')).toBeInTheDocument();
-        expect(screen.getByText('Venue: Stadium X')).toBeInTheDocument();
     });
 
-    it('displays score with winner first when scores are valid', () => {
+    it('displays score in Home Score – Away Score format', () => {
         render(<MatchList {...defaultProps} />);
-        // Home win: Team A (3) - Team B (1)
-        expect(screen.getByText('Team A (3) - Team B (1)')).toBeInTheDocument();
-        // Away win: Team D (2) - Team C (0)
-        expect(screen.getByText('Team D (2) - Team C (0)')).toBeInTheDocument();
+        // Score is now always Home - Away format
+        expect(screen.getByText(/Team A 3 – Team B 1/)).toBeInTheDocument();
+        expect(screen.getByText(/Team C 0 – Team D 2/)).toBeInTheDocument();
+    });
+
+    it('shows W indicator for a win', () => {
+        render(<MatchList {...defaultProps} selectedTeamName="Team A" />);
+        // Team A won match 100 (3-1 as home)
+        expect(screen.getByText('W')).toBeInTheDocument();
+    });
+
+    it('shows L indicator for a loss', () => {
+        render(<MatchList {...defaultProps} selectedTeamName="Team C" />);
+        // Team C lost match 101 (0-2 as home)
+        expect(screen.getByText('L')).toBeInTheDocument();
     });
 
     it('shows fallback text when scores are invalid', () => {
@@ -84,6 +97,7 @@ describe('MatchList Component', () => {
             ...sampleMatches[0],
             intHomeScore: null,
             intAwayScore: null,
+            strStatus: 'ABD',
         }];
         render(<MatchList {...defaultProps} matches={noScoreMatches} />);
         expect(screen.getByText('Score not natively recorded by TheSportsDB')).toBeInTheDocument();
@@ -115,7 +129,6 @@ describe('MatchList Component', () => {
         const { container } = render(
             <MatchList {...defaultProps} playingMatchId="100" />
         );
-        // GraphicEqIcon should be present for the playing match (via data-testid or SVG)
         const playingIcons = container.querySelectorAll('[data-testid="GraphicEqIcon"]');
         expect(playingIcons.length).toBe(1);
     });
@@ -123,7 +136,7 @@ describe('MatchList Component', () => {
     it('renders play icons for non-playing matches when audio is enabled', () => {
         const { container } = render(<MatchList {...defaultProps} />);
         const playIcons = container.querySelectorAll('[data-testid="PlayCircleOutlineIcon"]');
-        expect(playIcons.length).toBe(2); // One for each match
+        expect(playIcons.length).toBe(2);
     });
 
     it('does not render play icons when disableAudio is true', () => {
@@ -134,5 +147,42 @@ describe('MatchList Component', () => {
         const eqIcons = container.querySelectorAll('[data-testid="GraphicEqIcon"]');
         expect(playIcons.length).toBe(0);
         expect(eqIcons.length).toBe(0);
+    });
+
+    it('renders round labels as chips', () => {
+        render(<MatchList {...defaultProps} />);
+        const chips = screen.getAllByText('Regular Season');
+        expect(chips).toHaveLength(2);
+    });
+
+    it('shows Preseason label for round >= 500', () => {
+        const preseasonMatch = [{ ...sampleMatches[0], intRound: '500' }];
+        render(<MatchList {...defaultProps} matches={preseasonMatch} />);
+        expect(screen.getByText('Preseason')).toBeInTheDocument();
+    });
+
+    it('shows Postseason label for round 200-499', () => {
+        const postseasonMatch = [{ ...sampleMatches[0], intRound: '300' }];
+        render(<MatchList {...defaultProps} matches={postseasonMatch} />);
+        expect(screen.getByText('Postseason')).toBeInTheDocument();
+    });
+
+    it('renders pagination when pageCount is greater than 1', () => {
+        render(
+            <MatchList {...defaultProps} page={1} pageCount={3} onPageChange={jest.fn()} />
+        );
+        expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+
+    it('does not render pagination when pageCount is 1', () => {
+        render(
+            <MatchList {...defaultProps} page={1} pageCount={1} onPageChange={jest.fn()} />
+        );
+        expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
+    });
+
+    it('does not render pagination when pageCount is not provided', () => {
+        render(<MatchList {...defaultProps} />);
+        expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
     });
 });

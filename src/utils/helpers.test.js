@@ -1,4 +1,4 @@
-import { convertTime, isScoreValid, isLive } from './helpers';
+import { convertTime, isScoreValid, isLive, isFinished, normalizeScore } from './helpers';
 
 describe('Helper Functions', () => {
     describe('convertTime', () => {
@@ -40,6 +40,40 @@ describe('Helper Functions', () => {
         it('returns true for active, in-progress games', () => {
             expect(isLive({ strStatus: "1H" })).toBe(true);
             expect(isLive({ strStatus: "In Progress" })).toBe(true);
+        });
+    });
+
+    describe('isFinished', () => {
+        it('returns true for finished status codes', () => {
+            expect(isFinished({ strStatus: "FT" })).toBe(true);
+            expect(isFinished({ strStatus: "Match Finished" })).toBe(true);
+            expect(isFinished({ strStatus: "AET" })).toBe(true);
+        });
+
+        it('returns false for non-finished status codes', () => {
+            expect(isFinished({ strStatus: "NS" })).toBe(false);
+            expect(isFinished({ strStatus: "1H" })).toBe(false);
+            expect(isFinished({ strStatus: "" })).toBe(false);
+        });
+    });
+
+    describe('normalizeScore', () => {
+        it('returns score as-is when not null', () => {
+            expect(normalizeScore("3", { strStatus: "FT" })).toBe("3");
+            expect(normalizeScore("0", { strStatus: "FT" })).toBe("0");
+        });
+
+        it('coerces null to "0" for finished matches', () => {
+            expect(normalizeScore(null, { strStatus: "FT" })).toBe("0");
+            expect(normalizeScore(null, { strStatus: "Match Finished" })).toBe("0");
+        });
+
+        it('coerces null to "0" for live matches', () => {
+            expect(normalizeScore(null, { strStatus: "1H" })).toBe("0");
+        });
+
+        it('keeps null for not-started matches', () => {
+            expect(normalizeScore(null, { strStatus: "NS" })).toBe(null);
         });
     });
 });

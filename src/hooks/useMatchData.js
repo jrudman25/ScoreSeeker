@@ -1,18 +1,30 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toZonedTime } from 'date-fns-tz';
-import { isLive } from '../utils/helpers';
+import { isLive, isFinished } from '../utils/helpers';
+
+const MATCHES_PER_PAGE = 10;
 
 export const useMatchData = (teamId, timeZone) => {
     const [allMatches, setAllMatches] = useState([]);
     const [error, setError] = useState(null);
     const [isFetchingMatches, setIsFetchingMatches] = useState(false);
     const [loadedTeamId, setLoadedTeamId] = useState('');
+    const [isFallback, setIsFallback] = useState(false);
 
-    // Fetch matches only when teamId changes. This fixes the previous bug 
-    // where toggling timezone triggered a full API re-fetch.
+    // Pagination state
+    const [pastPage, setPastPage] = useState(1);
+    const [upcomingPage, setUpcomingPage] = useState(1);
+
+    // Reset pagination when team changes
+    useEffect(() => {
+        setPastPage(1);
+        setUpcomingPage(1);
+    }, [teamId]);
+
+    // Fetch full schedule when teamId changes
     useEffect(() => {
         let isMounted = true;
-        const fetchMatches = async () => {
+        const fetchSchedule = async () => {
             if (!teamId) {
                 setAllMatches([]);
                 setLoadedTeamId('');
@@ -24,30 +36,26 @@ export const useMatchData = (teamId, timeZone) => {
                 const data = await res.json();
 
                 if (!res.ok) {
-                    throw new Error(data.error || 'Failed to fetch matches');
+                    throw new Error(data.error || 'Failed to fetch schedule');
                 }
 
                 if (!isMounted) {
                     return;
                 }
 
-                const { pastData, upcomingData } = data;
-
-                const combined = [
-                    ...(pastData?.results || []),
-                    ...(upcomingData?.events || [])
-                ].sort((a, b) => {
+                const schedule = (data.schedule || []).sort((a, b) => {
                     const dateA = a.dateEvent ? new Date(`${a.dateEvent}T${a.strTime || '00:00:00'}`) : new Date(0);
                     const dateB = b.dateEvent ? new Date(`${b.dateEvent}T${b.strTime || '00:00:00'}`) : new Date(0);
                     return dateA - dateB;
                 });
 
-                setAllMatches(combined);
+                setAllMatches(schedule);
+                setIsFallback(!!data.isFallback);
                 setLoadedTeamId(teamId);
             } catch (err) {
                 if (isMounted) {
-                    setError('Error fetching matches: ' + err.message);
-                    setLoadedTeamId(teamId); // Ensure readiness even on error, so UI stops spinning
+                    setError('Error fetching schedule: ' + err.message);
+                    setLoadedTeamId(teamId);
                 }
             } finally {
                 if (isMounted) {
@@ -56,11 +64,11 @@ export const useMatchData = (teamId, timeZone) => {
             }
         };
 
-        fetchMatches();
+        fetchSchedule();
         return () => { isMounted = false; };
     }, [teamId]);
 
-    // Categorize matches without re-fetching, purely based on selected timeZone
+    // Categorize matches by status/date in the selected timezone
     const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo } = useMemo(() => {
         const past = [];
         const current = [];
@@ -71,20 +79,14 @@ export const useMatchData = (teamId, timeZone) => {
         const today = new Date(zonedNow);
         today.setHours(0, 0, 0, 0);
 
-        const isFinished = (status) => {
-            const s = (status || "").toUpperCase();
-            return s === "FT" || s === "MATCH FINISHED";
-        };
 
         for (const match of allMatches) {
             const matchDate = match.dateEvent ?
                 toZonedTime(new Date(`${match.dateEvent}T${match.strTime || '00:00:00'}`), timeZone) : null;
 
-            const status = match.strStatus?.toUpperCase() || "";
-
             if (isLive(match)) {
                 current.push(match);
-            } else if (isFinished(status)) {
+            } else if (isFinished(match)) {
                 past.push(match);
             } else if (matchDate && matchDate < today) {
                 past.push(match);
@@ -93,10 +95,46 @@ export const useMatchData = (teamId, timeZone) => {
             }
         }
 
-        return { pastMatchInfo: past, currentMatchInfo: current, upcomingMatchInfo: upcoming };
+        return { pastMatchInfo: past.reverse(), currentMatchInfo: current, upcomingMatchInfo: upcoming };
     }, [allMatches, timeZone]);
+
+    // Paginate past and upcoming
+    const pastPageCount = Math.ceil(pastMatchInfo.length / MATCHES_PER_PAGE) || 1;
+    const upcomingPageCount = Math.ceil(upcomingMatchInfo.length / MATCHES_PER_PAGE) || 1;
+
+    const paginatedPast = useMemo(() => {
+        const start = (pastPage - 1) * MATCHES_PER_PAGE;
+        return pastMatchInfo.slice(start, start + MATCHES_PER_PAGE);
+    }, [pastMatchInfo, pastPage]);
+
+    const paginatedUpcoming = useMemo(() => {
+        const start = (upcomingPage - 1) * MATCHES_PER_PAGE;
+        return upcomingMatchInfo.slice(start, start + MATCHES_PER_PAGE);
+    }, [upcomingMatchInfo, upcomingPage]);
+
+    const handlePastPageChange = useCallback((_event, page) => {
+        setPastPage(page);
+    }, []);
+
+    const handleUpcomingPageChange = useCallback((_event, page) => {
+        setUpcomingPage(page);
+    }, []);
 
     const isDataReady = loadedTeamId === teamId && !isFetchingMatches;
 
-    return { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error, isFetchingMatches, isDataReady };
+    return {
+        pastMatchInfo: paginatedPast,
+        currentMatchInfo,
+        upcomingMatchInfo: paginatedUpcoming,
+        pastPageCount,
+        upcomingPageCount,
+        pastPage,
+        upcomingPage,
+        onPastPageChange: handlePastPageChange,
+        onUpcomingPageChange: handleUpcomingPageChange,
+        error,
+        isFetchingMatches,
+        isFallback,
+        isDataReady,
+    };
 };

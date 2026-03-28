@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, createTheme, CssBaseline, Container, Typography, CircularProgress, AppBar, Toolbar, Box, Paper, IconButton, Menu, MenuItem, Divider } from '@mui/material';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { useTheme as useNextTheme } from 'next-themes';
 import TeamSearch from '../components/TeamSearch';
 import TeamDetails from '../components/TeamDetails';
 import MatchList from '../components/MatchList';
@@ -31,6 +32,9 @@ const getDefaultTimeZone = () => {
 };
 
 const SportsMusicApp = () => {
+    const { resolvedTheme, setTheme } = useNextTheme();
+    const darkMode = resolvedTheme === 'dark';
+
     const [timeZone, setTimeZone] = useState(() => {
         if (typeof window === 'undefined') {
             return getDefaultTimeZone();
@@ -41,29 +45,26 @@ const SportsMusicApp = () => {
             return getDefaultTimeZone();
         }
     });
-    const [darkMode, setDarkMode] = useState(() => {
-        if (typeof window === 'undefined') {
-            return false;
-        }
-        try {
-            return localStorage.getItem('scoreseeker_darkMode') === 'true';
-        } catch (_e) {
-            return false;
-        }
-    });
 
-    // Persist preferences whenever they change
+    // Persist timezone when it changes (skip until next-themes has resolved)
     useEffect(() => {
+        if (resolvedTheme === undefined) {
+            return;
+        }
         try {
-            localStorage.setItem('scoreseeker_darkMode', String(darkMode));
             localStorage.setItem('scoreseeker_timeZone', timeZone);
         } catch (_e) {
             // localStorage unavailable
         }
-    }, [darkMode, timeZone]);
+    }, [timeZone, resolvedTheme]);
 
     const { teamSearchResult, teamId, teamOptions, error: searchError, loading, fetchingOptions, fetchTeams, searchTeam } = useTeamSearch();
-    const { pastMatchInfo, currentMatchInfo, upcomingMatchInfo, error: matchError, isDataReady } = useMatchData(teamId, timeZone);
+    const {
+        pastMatchInfo, currentMatchInfo, upcomingMatchInfo,
+        pastPageCount, upcomingPageCount, pastPage, upcomingPage,
+        onPastPageChange, onUpcomingPageChange,
+        error: matchError, isFallback, isDataReady
+    } = useMatchData(teamId, timeZone);
 
     const isLoading = loading || (teamId && !isDataReady);
 
@@ -74,7 +75,7 @@ const SportsMusicApp = () => {
     const handleMenuClose = () => setAnchorEl(null);
 
     const toggleDarkMode = () => {
-        setDarkMode(prev => !prev);
+        setTheme(darkMode ? 'light' : 'dark');
         handleMenuClose();
     };
 
@@ -97,6 +98,11 @@ const SportsMusicApp = () => {
     };
 
     const error = searchError || matchError;
+
+    // Wait for next-themes to resolve before rendering MUI
+    if (resolvedTheme === undefined) {
+        return null;
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -192,6 +198,13 @@ const SportsMusicApp = () => {
                         <TeamDetails
                             team={teamSearchResult}
                         />
+                        {isFallback && (
+                            <Paper sx={{ p: 2, mb: 3, backgroundColor: darkMode ? '#1a2332' : '#e3f2fd', borderRadius: 2 }}>
+                                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                                    📋 Showing recent results — full season schedule is unavailable (team may be between seasons).
+                                </Typography>
+                            </Paper>
+                        )}
                         <MatchList
                             title="Past Matches"
                             matches={pastMatchInfo}
@@ -201,6 +214,10 @@ const SportsMusicApp = () => {
                             darkMode={darkMode}
                             playingMatchId={playingMatchId}
                             onPlayAudio={handlePlayAudio}
+                            page={pastPage}
+                            pageCount={pastPageCount}
+                            onPageChange={onPastPageChange}
+                            selectedTeamName={teamSearchResult?.strTeam}
                         />
                         <MatchList
                             title="Live Now"
@@ -212,6 +229,7 @@ const SportsMusicApp = () => {
                             disableAudio={true}
                             playingMatchId={playingMatchId}
                             onPlayAudio={handlePlayAudio}
+                            selectedTeamName={teamSearchResult?.strTeam}
                         />
                         <MatchList
                             title="Upcoming Matches"
@@ -223,6 +241,10 @@ const SportsMusicApp = () => {
                             disableAudio={true}
                             playingMatchId={playingMatchId}
                             onPlayAudio={handlePlayAudio}
+                            page={upcomingPage}
+                            pageCount={upcomingPageCount}
+                            onPageChange={onUpcomingPageChange}
+                            selectedTeamName={teamSearchResult?.strTeam}
                         />
                     </Box>
                 )}

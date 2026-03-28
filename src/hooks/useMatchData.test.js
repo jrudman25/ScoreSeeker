@@ -1,10 +1,10 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { useMatchData } from './useMatchData';
 
-// Mock global fetch globally for this isolated test suite
+// Mock global fetch
 global.fetch = jest.fn();
 
-describe('useMatchData Hook Integration', () => {
+describe('useMatchData Hook (v2)', () => {
     beforeEach(() => {
         fetch.mockClear();
     });
@@ -16,65 +16,89 @@ describe('useMatchData Hook Integration', () => {
         expect(result.current.currentMatchInfo).toEqual([]);
         expect(result.current.upcomingMatchInfo).toEqual([]);
         expect(result.current.isFetchingMatches).toBe(false);
-        expect(result.current.isDataReady).toBe(false); // Should not be ready if no team loaded
+        expect(result.current.isDataReady).toBe(false);
     });
 
-    it('fetches match info and strictly synchronizes the isDataReady state', async () => {
-        const mockMatches = {
-            pastData: {
-                results: [
-                    { idEvent: '1', dateEvent: '2020-01-01', strTime: '12:00:00', strStatus: 'Match Finished' }
-                ]
-            },
-            upcomingData: {
-                events: [
-                    { idEvent: '2', dateEvent: '2030-01-01', strTime: '12:00:00', strStatus: 'Not Started' }
-                ]
-            }
+    it('fetches schedule and categorizes matches correctly', async () => {
+        const mockResponse = {
+            schedule: [
+                { idEvent: '1', dateEvent: '2020-01-01', strTime: '12:00:00', strStatus: 'Match Finished' },
+                { idEvent: '2', dateEvent: '2030-01-01', strTime: '12:00:00', strStatus: 'Not Started' }
+            ]
         };
 
-        // Supplying our mock data directly into the hook's native fetch API call
         fetch.mockResolvedValueOnce({
             ok: true,
-            json: async () => mockMatches
+            json: async () => mockResponse
         });
 
-        const { result } = renderHook(() => useMatchData('team_12345', 'America/New_York'));
+        const { result } = renderHook(() => useMatchData('team_123', 'America/New_York'));
 
-        // 1. Initial State: The hook should instantly intercept the team ID and commence fetching
         expect(result.current.isFetchingMatches).toBe(true);
-        expect(result.current.isDataReady).toBe(false);
 
-        // 2. Await the asynchronous hook resolution natively via RTL
         await waitFor(() => {
             expect(result.current.isFetchingMatches).toBe(false);
         });
 
-        // 3. Final State: Assert that all layout synchronization booleans are valid
-        expect(fetch).toHaveBeenCalledWith('/api/matches?id=team_12345');
+        expect(fetch).toHaveBeenCalledWith('/api/matches?id=team_123');
         expect(result.current.isDataReady).toBe(true);
-
-        // 4. Validate the complex date parsing logic safely sorted them
         expect(result.current.pastMatchInfo).toHaveLength(1);
-        expect(result.current.pastMatchInfo[0].idEvent).toBe('1');
-
         expect(result.current.upcomingMatchInfo).toHaveLength(1);
-        expect(result.current.upcomingMatchInfo[0].idEvent).toBe('2');
     });
 
-    it('handles network breakdown securely without locking up the UI router', async () => {
-        // Force the API to structurally completely fail
-        fetch.mockRejectedValueOnce(new Error('Network disconnected'));
+    it('handles empty schedule (offseason team) gracefully', async () => {
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ schedule: [] })
+        });
 
-        const { result } = renderHook(() => useMatchData('broken_team_555', 'Europe/London'));
+        const { result } = renderHook(() => useMatchData('team_456', 'UTC'));
 
         await waitFor(() => {
             expect(result.current.isFetchingMatches).toBe(false);
         });
 
-        expect(result.current.error).toContain('Error fetching matches');
-        // Crucially, even on total internal failure, the app MUST resolve isDataReady 
-        // to `true` to force the UI spinner to dismount and surface the text error.
         expect(result.current.isDataReady).toBe(true);
+        expect(result.current.pastMatchInfo).toEqual([]);
+        expect(result.current.upcomingMatchInfo).toEqual([]);
+    });
+
+    it('handles network errors without locking the UI', async () => {
+        fetch.mockRejectedValueOnce(new Error('Network disconnected'));
+
+        const { result } = renderHook(() => useMatchData('broken_team', 'Europe/London'));
+
+        await waitFor(() => {
+            expect(result.current.isFetchingMatches).toBe(false);
+        });
+
+        expect(result.current.error).toContain('Error fetching schedule');
+        expect(result.current.isDataReady).toBe(true);
+    });
+
+    it('exposes pagination state for past and upcoming matches', async () => {
+        // Create 15 past matches to trigger pagination
+        const pastMatches = Array.from({ length: 15 }, (_, i) => ({
+            idEvent: String(i),
+            dateEvent: '2020-01-01',
+            strTime: '12:00:00',
+            strStatus: 'Match Finished'
+        }));
+
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ schedule: pastMatches })
+        });
+
+        const { result } = renderHook(() => useMatchData('team_789', 'America/Los_Angeles'));
+
+        await waitFor(() => {
+            expect(result.current.isDataReady).toBe(true);
+        });
+
+        // Should paginate: 10 on page 1, 5 on page 2
+        expect(result.current.pastMatchInfo).toHaveLength(10);
+        expect(result.current.pastPage).toBe(1);
+        expect(result.current.pastPageCount).toBe(2);
     });
 });

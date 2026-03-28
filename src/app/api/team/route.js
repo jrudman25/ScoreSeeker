@@ -1,39 +1,43 @@
 import { NextResponse } from 'next/server';
-import teamsData from '../../../data/teams.json';
+
+const API_BASE = 'https://www.thesportsdb.com/api/v2/json';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('t')?.toLowerCase().trim() || '';
+    const query = searchParams.get('t')?.trim() || '';
     const id = searchParams.get('id');
+    const apiKey = process.env.SPORTS_DB_API_KEY;
+    const headers = { 'X-API-KEY': apiKey };
 
-    // If selecting a specific team, fetch the rich profile from TheSportsDB
+    // Lookup mode: fetch full team profile by ID
     if (id) {
-        const apiKey = process.env.SPORTS_DB_API_KEY || '123';
         try {
-            const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/lookupteam.php?id=${id}`);
+            const res = await fetch(`${API_BASE}/lookup/team/${id}`, { headers });
             const data = await res.json();
-            return NextResponse.json(data);
+
+            if (data.lookup && data.lookup.length > 0) {
+                return NextResponse.json({ lookup: data.lookup });
+            }
+            return NextResponse.json({ lookup: [] });
         } catch (_e) {
             return NextResponse.json({ error: 'Failed to lookup team details' }, { status: 500 });
         }
     }
 
+    // Search mode: query the v2 search endpoint directly
     if (!query || query.length < 2) {
-        return NextResponse.json({ teams: [] });
+        return NextResponse.json({ search: [] });
     }
 
     try {
-        // Perform an instant substring (fuzzy) search against the entire cached global db
-        const matchedTeams = teamsData.filter(team => {
-            const name = (team.strTeam || '').toLowerCase();
-            const alt = (team.strTeamAlternate || '').toLowerCase();
-            return name.includes(query) || alt.includes(query);
-        });
+        const res = await fetch(`${API_BASE}/search/team/${encodeURIComponent(query)}`, { headers });
+        const data = await res.json();
 
-        // Limit results to 50 to keep the Autocomplete speedy and network payload tiny
-        return NextResponse.json({ teams: matchedTeams.slice(0, 50) });
-    } catch (error) {
-        console.error("Local search error:", error);
-        return NextResponse.json({ error: 'Failed to search local team registry' }, { status: 500 });
+        if (data.search && data.search.length > 0) {
+            return NextResponse.json({ search: data.search });
+        }
+        return NextResponse.json({ search: [] });
+    } catch (_e) {
+        return NextResponse.json({ error: 'Failed to search teams' }, { status: 500 });
     }
 }

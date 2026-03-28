@@ -20,10 +20,10 @@ export const useTeamSearch = () => {
             const response = await fetch(`/api/team?t=${encodeURIComponent(teamName)}`);
             const data = await response.json();
 
-            if (response.ok && data.teams) {
-                setTeamOptions(data.teams);
+            if (response.ok && data.search) {
+                setTeamOptions(data.search);
             } else {
-                setTeamOptions([]); // No teams found
+                setTeamOptions([]);
             }
         } catch (err) {
             setError('Error searching for teams: ' + err.message);
@@ -38,9 +38,9 @@ export const useTeamSearch = () => {
         try {
             const res = await fetch(`/api/team?id=${teamObj.idTeam}`);
             const data = await res.json();
-            if (data.teams && data.teams.length > 0) {
-                setTeamSearchResult(data.teams[0]);
-                setTeamId(data.teams[0].idTeam);
+            if (data.lookup && data.lookup.length > 0) {
+                setTeamSearchResult(data.lookup[0]);
+                setTeamId(data.lookup[0].idTeam);
             } else {
                 setError("Team details not found");
             }

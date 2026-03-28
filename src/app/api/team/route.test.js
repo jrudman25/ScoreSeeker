@@ -3,18 +3,10 @@
  */
 import { GET } from './route';
 
-// Mock the teams.json static import
-jest.mock('../../../data/teams.json', () => [
-    { idTeam: '100', strTeam: 'Manchester United', strSport: 'Soccer', strLeague: 'EPL', strTeamAlternate: 'Man Utd', strBadge: '' },
-    { idTeam: '101', strTeam: 'Manchester City', strSport: 'Soccer', strLeague: 'EPL', strTeamAlternate: 'Man City', strBadge: '' },
-    { idTeam: '102', strTeam: 'LA Lakers', strSport: 'Basketball', strLeague: 'NBA', strTeamAlternate: 'Lakers', strBadge: '' },
-    { idTeam: '103', strTeam: 'New York Yankees', strSport: 'Baseball', strLeague: 'MLB', strTeamAlternate: 'Yankees', strBadge: '' },
-]);
-
-// Mock global fetch for the remote API calls
+// Mock global fetch
 global.fetch = jest.fn();
 
-describe('/api/team Route', () => {
+describe('/api/team Route (v2)', () => {
     beforeEach(() => {
         fetch.mockClear();
         process.env.SPORTS_DB_API_KEY = 'test_key';
@@ -24,71 +16,89 @@ describe('/api/team Route', () => {
         return { url: `http://localhost:3000/api/team${params}` };
     }
 
-    // --- Search mode tests (using local JSON) ---
+    // --- Search mode tests ---
 
     it('returns empty array for queries shorter than 2 characters', async () => {
         const response = await GET(createRequest('?t=A'));
         const data = await response.json();
-
-        expect(data.teams).toEqual([]);
+        expect(data.search).toEqual([]);
     });
 
     it('returns empty array when no query is provided', async () => {
         const response = await GET(createRequest());
         const data = await response.json();
-
-        expect(data.teams).toEqual([]);
+        expect(data.search).toEqual([]);
     });
 
     it('returns matching teams for a valid search query', async () => {
-        const response = await GET(createRequest('?t=manchester'));
+        const mockSearch = {
+            search: [
+                { idTeam: '100', strTeam: 'Cardinals', strSport: 'Baseball' },
+                { idTeam: '101', strTeam: 'Cardinals', strSport: 'American Football' },
+            ]
+        };
+
+        fetch.mockResolvedValueOnce({ json: async () => mockSearch });
+
+        const response = await GET(createRequest('?t=Cardinals'));
         const data = await response.json();
 
-        expect(data.teams).toHaveLength(2);
-        expect(data.teams[0].strTeam).toBe('Manchester United');
-        expect(data.teams[1].strTeam).toBe('Manchester City');
+        expect(fetch).toHaveBeenCalledWith(
+            expect.stringContaining('/api/v2/json/search/team/Cardinals'),
+            expect.objectContaining({ headers: { 'X-API-KEY': 'test_key' } })
+        );
+        expect(data.search).toHaveLength(2);
     });
 
-    it('matches against alternate team names', async () => {
-        const response = await GET(createRequest('?t=yankees'));
+    it('returns empty array when v2 search has no results', async () => {
+        fetch.mockResolvedValueOnce({ json: async () => ({ search: null }) });
+
+        const response = await GET(createRequest('?t=zzzzzzz'));
         const data = await response.json();
-
-        expect(data.teams).toHaveLength(1);
-        expect(data.teams[0].strTeam).toBe('New York Yankees');
+        expect(data.search).toEqual([]);
     });
 
-    it('performs case-insensitive search', async () => {
-        const response = await GET(createRequest('?t=LAKERS'));
+    it('returns 500 when search API call fails', async () => {
+        fetch.mockRejectedValueOnce(new Error('Network error'));
+
+        const response = await GET(createRequest('?t=Cardinals'));
         const data = await response.json();
-
-        expect(data.teams).toHaveLength(1);
-        expect(data.teams[0].strTeam).toBe('LA Lakers');
+        expect(response.status).toBe(500);
+        expect(data.error).toBe('Failed to search teams');
     });
 
-    // --- ID lookup mode tests (using remote API) ---
+    // --- Lookup mode tests ---
 
-    it('fetches team profile from TheSportsDB when id param is provided', async () => {
-        const mockProfile = { teams: [{ idTeam: '100', strTeam: 'Manchester United', strDescriptionEN: 'Full details' }] };
+    it('fetches team profile when id param is provided', async () => {
+        const mockLookup = {
+            lookup: [{ idTeam: '100', strTeam: 'Cardinals', strDescriptionEN: 'Full details' }]
+        };
 
-        fetch.mockResolvedValueOnce({
-            json: async () => mockProfile,
-        });
+        fetch.mockResolvedValueOnce({ json: async () => mockLookup });
 
         const response = await GET(createRequest('?id=100'));
         const data = await response.json();
 
         expect(fetch).toHaveBeenCalledWith(
-            expect.stringContaining('test_key/lookupteam.php?id=100')
+            expect.stringContaining('/api/v2/json/lookup/team/100'),
+            expect.objectContaining({ headers: { 'X-API-KEY': 'test_key' } })
         );
-        expect(data.teams[0].strDescriptionEN).toBe('Full details');
+        expect(data.lookup[0].strDescriptionEN).toBe('Full details');
     });
 
-    it('returns 500 when remote API lookup fails', async () => {
+    it('returns empty array when lookup finds no team', async () => {
+        fetch.mockResolvedValueOnce({ json: async () => ({ lookup: null }) });
+
+        const response = await GET(createRequest('?id=99999'));
+        const data = await response.json();
+        expect(data.lookup).toEqual([]);
+    });
+
+    it('returns 500 when lookup API call fails', async () => {
         fetch.mockRejectedValueOnce(new Error('API down'));
 
         const response = await GET(createRequest('?id=100'));
         const data = await response.json();
-
         expect(response.status).toBe(500);
         expect(data.error).toBe('Failed to lookup team details');
     });
