@@ -1,6 +1,20 @@
 import { NextResponse } from 'next/server';
+import teamIndex from '../../../data/teams.json';
 
 const API_BASE = 'https://www.thesportsdb.com/api/v2/json';
+
+/**
+ * Search the local team index as a fallback when the v2 API returns no results.
+ * Matches against full team name (substring) and team short name (exact, case-insensitive).
+ */
+function searchLocalIndex(query) {
+    const q = query.toLowerCase();
+    return teamIndex.filter(team => {
+        const name = (team.strTeam || '').toLowerCase();
+        const short = (team.strTeamShort || '').toLowerCase();
+        return name.includes(q) || short === q;
+    });
+}
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -36,6 +50,13 @@ export async function GET(request) {
         if (data.search && data.search.length > 0) {
             return NextResponse.json({ search: data.search });
         }
+
+        // v2 returned no results — fall back to local team index
+        const localResults = searchLocalIndex(query);
+        if (localResults.length > 0) {
+            return NextResponse.json({ search: localResults });
+        }
+
         return NextResponse.json({ search: [] });
     } catch (_e) {
         return NextResponse.json({ error: 'Failed to search teams' }, { status: 500 });
