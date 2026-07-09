@@ -7,7 +7,7 @@ ScoreSeeker allows users to search for sports teams, view their upcoming and pas
 ---
 
 ### Features
-- **Team Search** — Search any team by name, nickname, or abbreviation across 18,000+ teams worldwide
+- **Team Search** — Search any team by name, nickname, or abbreviation across 20,000+ teams worldwide
 - **Match Schedules** — View upcoming and past matches with live scores and other match info
 - **Off-Season Fallback** — Automatically shows the most recent or next season when a team is between seasons
 - **Dynamic Audio** — Generates unique Tone.js musical snippets based on match scores
