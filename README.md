@@ -1,17 +1,17 @@
-# ScoreSeeker
-## A sports data app with dynamic audio snippets
-#### Created by Jordan Rudman
+# ScoreSeeker - Sports data with dynamic audio snippets
 
 ScoreSeeker allows users to search for sports teams, view their upcoming and past match schedules, and play dynamic musical Tone.js snippets based on match scores.
+
+<img width="700" alt="ScoreSeeker snippet" src="https://github.com/user-attachments/assets/b10cbc98-9772-45a7-85d9-0cfacce149d3" />
 
 ---
 
 ### Features
-- **Team Search** — Search any team by name, nickname, or abbreviation across 20,000+ teams worldwide
-- **Match Schedules** — View upcoming and past matches with live scores and other match info
-- **Off-Season Fallback** — Automatically shows the most recent or next season when a team is between seasons
-- **Dynamic Audio** — Generates unique Tone.js musical snippets based on match scores
-- **Dark Mode** — Flash-free theme persistence powered by `next-themes`
+- **Team Search** - Search any team by name, nickname, or abbreviation across 20,000+ teams worldwide
+- **Match Schedules** - View upcoming and past matches with live scores and other match info
+- **Off-Season Fallback** - Automatically shows the most recent or next season when a team is between seasons
+- **Dynamic Audio** - Generates unique Tone.js musical snippets based on match scores
+- **Dark Mode** - Flash-free theme persistence powered by `next-themes`
 
 ### Tech Stack
 - **Framework:** Next.js
