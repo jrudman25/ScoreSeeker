@@ -20,6 +20,7 @@ ScoreSeeker allows users to search for sports teams, view their upcoming and pas
 - **Data Source:** TheSportsDB API (v2)
 - **Theme:** next-themes
 - **Testing:** Jest
+- **CI:** GitHub Actions (lint, test, build on pushes to `main` and pull requests)
 - **Deployment:** Netlify
 
 ### Architecture
@@ -31,6 +32,7 @@ The application features secure server-side Next.js API routing to proxy request
 | Script | Purpose |
 |---|---|
 | `npm run dev` | Start the dev server |
+| `npm run lint` | Run ESLint |
 | `npm test` | Run all unit tests |
 | `npm run build` | Create a production build |
 | `node scripts/build_team_list_v2.js` | Regenerate `src/data/teams.json` from the TheSportsDB API |
