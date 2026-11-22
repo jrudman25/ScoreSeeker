@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import teamIndex from '../../../data/teams.json';
+import { isValidTeamId } from '../../../utils/isValidTeamId';
 
 const API_BASE = 'https://www.thesportsdb.com/api/v2/json';
 
@@ -20,13 +21,26 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('t')?.trim() || '';
     const id = searchParams.get('id');
+
+    if (id && !isValidTeamId(id)) {
+        return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
+    }
+
     const apiKey = process.env.SPORTS_DB_API_KEY;
+    if (!apiKey) {
+        console.error('SPORTS_DB_API_KEY is not configured');
+        return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
     const headers = { 'X-API-KEY': apiKey };
 
     // Lookup mode: fetch full team profile by ID
     if (id) {
         try {
-            const res = await fetch(`${API_BASE}/lookup/team/${id}`, { headers });
+            const res = await fetch(`${API_BASE}/lookup/team/${encodeURIComponent(id)}`, { headers });
+            if (!res.ok) {
+                console.error(`Upstream /lookup/team/${encodeURIComponent(id)} returned status ${res.status}`);
+                return NextResponse.json({ error: 'Upstream service error' }, { status: 502 });
+            }
             const data = await res.json();
 
             if (data.lookup && data.lookup.length > 0) {
@@ -45,6 +59,14 @@ export async function GET(request) {
 
     try {
         const res = await fetch(`${API_BASE}/search/team/${encodeURIComponent(query)}`, { headers });
+        if (!res.ok) {
+            console.error(`Upstream /search/team/${encodeURIComponent(query)} returned status ${res.status}`);
+            const localResults = searchLocalIndex(query);
+            if (localResults.length > 0) {
+                return NextResponse.json({ search: localResults });
+            }
+            return NextResponse.json({ error: 'Upstream service error' }, { status: 502 });
+        }
         const data = await res.json();
 
         if (data.search && data.search.length > 0) {

@@ -47,7 +47,7 @@ describe('/api/team Route (v2)', () => {
             ]
         };
 
-        fetch.mockResolvedValueOnce({ json: async () => mockSearch });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => mockSearch });
 
         const response = await GET(createRequest('?t=Cardinals'));
         const data = await response.json();
@@ -60,7 +60,7 @@ describe('/api/team Route (v2)', () => {
     });
 
     it('falls back to local index when v2 search returns no results', async () => {
-        fetch.mockResolvedValueOnce({ json: async () => ({ search: null }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ search: null }) });
 
         const response = await GET(createRequest('?t=knicks'));
         const data = await response.json();
@@ -69,7 +69,7 @@ describe('/api/team Route (v2)', () => {
     });
 
     it('matches local index by team short name', async () => {
-        fetch.mockResolvedValueOnce({ json: async () => ({ search: null }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ search: null }) });
 
         const response = await GET(createRequest('?t=NYK'));
         const data = await response.json();
@@ -78,7 +78,7 @@ describe('/api/team Route (v2)', () => {
     });
 
     it('returns empty array when neither v2 nor local index match', async () => {
-        fetch.mockResolvedValueOnce({ json: async () => ({ search: null }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ search: null }) });
 
         const response = await GET(createRequest('?t=zzzzzzz'));
         const data = await response.json();
@@ -101,7 +101,7 @@ describe('/api/team Route (v2)', () => {
             lookup: [{ idTeam: '100', strTeam: 'Cardinals', strDescriptionEN: 'Full details' }]
         };
 
-        fetch.mockResolvedValueOnce({ json: async () => mockLookup });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => mockLookup });
 
         const response = await GET(createRequest('?id=100'));
         const data = await response.json();
@@ -114,7 +114,7 @@ describe('/api/team Route (v2)', () => {
     });
 
     it('returns empty array when lookup finds no team', async () => {
-        fetch.mockResolvedValueOnce({ json: async () => ({ lookup: null }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ lookup: null }) });
 
         const response = await GET(createRequest('?id=99999'));
         const data = await response.json();
@@ -128,5 +128,73 @@ describe('/api/team Route (v2)', () => {
         const data = await response.json();
         expect(response.status).toBe(500);
         expect(data.error).toBe('Failed to lookup team details');
+    });
+
+    // --- Validation / upstream status tests ---
+
+    it('returns 400 and does not fetch for a non-numeric id', async () => {
+        const response = await GET(createRequest('?id=abc'));
+        const data = await response.json();
+        expect(response.status).toBe(400);
+        expect(data.error).toBe('Invalid team ID');
+        expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('returns 400 and does not fetch for a path traversal id', async () => {
+        const response = await GET(createRequest(`?id=${encodeURIComponent('../../all/leagues')}`));
+        const data = await response.json();
+        expect(response.status).toBe(400);
+        expect(data.error).toBe('Invalid team ID');
+        expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('returns 500 and does not fetch when the API key is missing', async () => {
+        delete process.env.SPORTS_DB_API_KEY;
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        const response = await GET(createRequest('?id=100'));
+        const data = await response.json();
+
+        expect(response.status).toBe(500);
+        expect(data.error).toBe('Server configuration error');
+        expect(fetch).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+    });
+
+    it('returns 502 when the lookup upstream responds non-ok', async () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        fetch.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({}) });
+
+        const response = await GET(createRequest('?id=100'));
+        const data = await response.json();
+
+        expect(response.status).toBe(502);
+        expect(data.error).toBe('Upstream service error');
+        consoleSpy.mockRestore();
+    });
+
+    it('falls back to the local index when search upstream responds non-ok', async () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        fetch.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({}) });
+
+        const response = await GET(createRequest('?t=knicks'));
+        const data = await response.json();
+
+        expect(response.status).toBe(200);
+        expect(data.search).toHaveLength(2);
+        expect(data.search[0].strTeam).toBe('New York Knicks');
+        consoleSpy.mockRestore();
+    });
+
+    it('returns 502 when search upstream is non-ok and the local index has no match', async () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        fetch.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({}) });
+
+        const response = await GET(createRequest('?t=zzzzzzz'));
+        const data = await response.json();
+
+        expect(response.status).toBe(502);
+        expect(data.error).toBe('Upstream service error');
+        consoleSpy.mockRestore();
     });
 });

@@ -31,7 +31,7 @@ describe('/api/matches Route (v2)', () => {
             ]
         };
 
-        fetch.mockResolvedValueOnce({ json: async () => mockSchedule });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => mockSchedule });
 
         const response = await GET(createRequest('?id=12345'));
         const data = await response.json();
@@ -47,11 +47,11 @@ describe('/api/matches Route (v2)', () => {
 
     it('falls back to previous + next endpoints when full schedule is empty', async () => {
         // Full schedule returns empty
-        fetch.mockResolvedValueOnce({ json: async () => ({ schedule: [] }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ schedule: [] }) });
         // Previous schedule returns data
-        fetch.mockResolvedValueOnce({ json: async () => ({ schedule: [{ idEvent: 'p1', strStatus: 'FT' }] }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ schedule: [{ idEvent: 'p1', strStatus: 'FT' }] }) });
         // Next schedule returns empty
-        fetch.mockResolvedValueOnce({ json: async () => ({ schedule: [] }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ schedule: [] }) });
 
         const response = await GET(createRequest('?id=12345'));
         const data = await response.json();
@@ -63,9 +63,9 @@ describe('/api/matches Route (v2)', () => {
     });
 
     it('returns empty schedule with isFallback=true when all endpoints have no data', async () => {
-        fetch.mockResolvedValueOnce({ json: async () => ({ Message: 'No data found' }) });
-        fetch.mockResolvedValueOnce({ json: async () => ({ Message: 'No data found' }) });
-        fetch.mockResolvedValueOnce({ json: async () => ({ Message: 'No data found' }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ Message: 'No data found' }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ Message: 'No data found' }) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ Message: 'No data found' }) });
 
         const response = await GET(createRequest('?id=12345'));
         const data = await response.json();
@@ -82,5 +82,63 @@ describe('/api/matches Route (v2)', () => {
         const data = await response.json();
         expect(response.status).toBe(500);
         expect(data.error).toBe('Failed to fetch schedule');
+    });
+
+    // --- Validation / upstream status tests ---
+
+    it('returns 400 and does not fetch for a non-numeric team ID', async () => {
+        const response = await GET(createRequest('?id=abc'));
+        const data = await response.json();
+        expect(response.status).toBe(400);
+        expect(data.error).toBe('Invalid team ID');
+        expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('returns 400 and does not fetch for a path traversal team ID', async () => {
+        const response = await GET(createRequest(`?id=${encodeURIComponent('../../all/leagues')}`));
+        const data = await response.json();
+        expect(response.status).toBe(400);
+        expect(data.error).toBe('Invalid team ID');
+        expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('returns 500 and does not fetch when the API key is missing', async () => {
+        delete process.env.SPORTS_DB_API_KEY;
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        const response = await GET(createRequest('?id=12345'));
+        const data = await response.json();
+
+        expect(response.status).toBe(500);
+        expect(data.error).toBe('Server configuration error');
+        expect(fetch).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+    });
+
+    it('returns 502 when the full schedule upstream responds non-ok', async () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        fetch.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({}) });
+
+        const response = await GET(createRequest('?id=12345'));
+        const data = await response.json();
+
+        expect(response.status).toBe(502);
+        expect(data.error).toBe('Upstream service error');
+        expect(fetch).toHaveBeenCalledTimes(1);
+        consoleSpy.mockRestore();
+    });
+
+    it('returns 502 when a fallback endpoint responds non-ok', async () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ schedule: [] }) });
+        fetch.mockResolvedValueOnce({ ok: false, status: 500, json: async () => ({}) });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ schedule: [] }) });
+
+        const response = await GET(createRequest('?id=12345'));
+        const data = await response.json();
+
+        expect(response.status).toBe(502);
+        expect(data.error).toBe('Upstream service error');
+        consoleSpy.mockRestore();
     });
 });
