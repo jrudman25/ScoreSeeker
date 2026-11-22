@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import MatchList from './MatchList';
 
 describe('MatchList Component', () => {
@@ -113,6 +114,23 @@ describe('MatchList Component', () => {
         render(<MatchList {...defaultProps} disableAudio={true} />);
         fireEvent.click(screen.getByText('Team A vs Team B'));
         expect(mockOnPlayAudio).not.toHaveBeenCalled();
+    });
+
+    it('activates a playable row via keyboard (Tab to focus, Enter to play)', async () => {
+        const user = userEvent.setup();
+        render(<MatchList {...defaultProps} />);
+
+        const rows = screen.getAllByRole('button');
+        await user.tab();
+        expect(rows[0]).toHaveFocus();
+
+        await user.keyboard('{Enter}');
+        expect(mockOnPlayAudio).toHaveBeenCalledWith(sampleMatches[0]);
+    });
+
+    it('renders no focusable buttons when disableAudio is true', () => {
+        render(<MatchList {...defaultProps} disableAudio={true} />);
+        expect(screen.queryAllByRole('button')).toHaveLength(0);
     });
 
     it('shows live status indicator when isLive returns true', () => {

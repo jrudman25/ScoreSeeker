@@ -4,7 +4,7 @@
  * @version 2026.03.27
  */
 import React from 'react';
-import { Typography, Paper, List, ListItem, ListItemText, Box, Pagination, Chip } from '@mui/material';
+import { Typography, Paper, List, ListItem, ListItemButton, ListItemText, Box, Pagination, Chip } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import GraphicEqIcon from '@mui/icons-material/GraphicEq';
 import { normalizeScore } from '../utils/helpers';
@@ -62,6 +62,8 @@ const resultColors = {
 };
 
 const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode, disableAudio, playingMatchId, onPlayAudio, page, pageCount, onPageChange, selectedTeamName }) => {
+    // Playable rows render as buttons so they are focusable and activate on Enter/Space
+    const RowComponent = disableAudio ? ListItem : ListItemButton;
     return (
         <Paper sx={{ p: 3, mb: 4 }}>
             <Typography variant="h5" component="h2" gutterBottom>
@@ -78,7 +80,7 @@ const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode
                         const result = hasScore ? getResult(normalizedMatch, selectedTeamName) : null;
                         const roundLabel = getRoundLabel(match.intRound);
                         return (
-                            <ListItem key={match.idEvent}
+                            <RowComponent key={match.idEvent}
                                 divider
                                 onClick={disableAudio ? undefined : () => onPlayAudio(match)}
                                 sx={{
@@ -159,7 +161,7 @@ const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode
                                     }
                                     slotProps={{ secondary: { component: 'div' } }}
                                 />
-                            </ListItem>
+                            </RowComponent>
                         );
                     })}
                 </List>

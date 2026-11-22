@@ -1,4 +1,4 @@
-import { convertTime, isScoreValid, isLive, isFinished, normalizeScore } from './helpers';
+import { convertTime, isScoreValid, isLive, isFinished, normalizeScore, parseMatchDate } from './helpers';
 
 describe('Helper Functions', () => {
     describe('convertTime', () => {
@@ -40,6 +40,47 @@ describe('Helper Functions', () => {
         it('returns true for active, in-progress games', () => {
             expect(isLive({ strStatus: "1H" })).toBe(true);
             expect(isLive({ strStatus: "In Progress" })).toBe(true);
+        });
+
+        it('returns false for missing or empty status', () => {
+            expect(isLive({ strStatus: null })).toBe(false);
+            expect(isLive({ strStatus: undefined })).toBe(false);
+            expect(isLive({ strStatus: "" })).toBe(false);
+            expect(isLive({})).toBe(false);
+        });
+    });
+
+    describe('parseMatchDate', () => {
+        it('parses dateEvent + strTime as UTC', () => {
+            const date = parseMatchDate({ dateEvent: '2024-01-01', strTime: '23:30:00' });
+            expect(date.getTime()).toBe(Date.UTC(2024, 0, 1, 23, 30));
+        });
+
+        it('defaults missing strTime to midnight UTC', () => {
+            const date = parseMatchDate({ dateEvent: '2024-01-01' });
+            expect(date.getTime()).toBe(Date.UTC(2024, 0, 1));
+        });
+
+        it('prefers strTimestamp over dateEvent', () => {
+            const date = parseMatchDate({
+                strTimestamp: '2024-06-15T19:00:00',
+                dateEvent: '2024-01-01',
+                strTime: '23:30:00',
+            });
+            expect(date.getTime()).toBe(Date.UTC(2024, 5, 15, 19, 0));
+        });
+
+        it('does not double-suffix strings that already carry a zone', () => {
+            const zoned = parseMatchDate({ strTimestamp: '2024-06-15T19:00:00Z' });
+            expect(zoned.getTime()).toBe(Date.UTC(2024, 5, 15, 19, 0));
+
+            const offset = parseMatchDate({ strTimestamp: '2024-06-15T19:00:00+02:00' });
+            expect(offset.getTime()).toBe(Date.UTC(2024, 5, 15, 17, 0));
+        });
+
+        it('returns null when no date info exists', () => {
+            expect(parseMatchDate({})).toBeNull();
+            expect(parseMatchDate({ strStatus: 'NS' })).toBeNull();
         });
     });
 

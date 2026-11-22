@@ -114,7 +114,7 @@ const SportsMusicApp = () => {
                         <AudiotrackIcon sx={{ mr: 1 }} /> ScoreSeeker
                     </Typography>
 
-                    <IconButton color="inherit" onClick={handleMenuOpen}>
+                    <IconButton color="inherit" onClick={handleMenuOpen} aria-label="Settings">
                         <SettingsIcon />
                     </IconButton>
 
@@ -188,7 +188,7 @@ const SportsMusicApp = () => {
                         <Box sx={{ display: 'inline-block', textAlign: 'left', p: 3, backgroundColor: darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.5)', borderRadius: 2 }}>
                             <Typography variant="body1" sx={{ mb: 1, fontSize: '1.1rem' }}>📅 <strong>Schedules:</strong> Comprehensive match histories</Typography>
                             <Typography variant="body1" sx={{ mb: 1, fontSize: '1.1rem' }}>🎵 <strong>Audio:</strong> Hear unique, algorithmic theme songs based on game scores</Typography>
-                            <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>🌎 <strong>Global:</strong> Search instantly from a database of over 14,000 teams</Typography>
+                            <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>🌎 <strong>Global:</strong> Search instantly across thousands of teams worldwide</Typography>
                         </Box>
                     </Paper>
                 )}

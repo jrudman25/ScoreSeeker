@@ -159,5 +159,6 @@ export async function playMatchTheme(match, onStop) {
 
     } catch (error) {
         console.warn("Advanced Audio playback error:", error);
+        onStop?.();
     }
 }

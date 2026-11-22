@@ -76,6 +76,36 @@ describe('useMatchData Hook (v2)', () => {
         expect(result.current.isDataReady).toBe(true);
     });
 
+    it('clears a previous error when a subsequent fetch succeeds', async () => {
+        fetch.mockRejectedValueOnce(new Error('Network disconnected'));
+
+        const { result, rerender } = renderHook(
+            ({ id }) => useMatchData(id, 'UTC'),
+            { initialProps: { id: 'failing_team' } }
+        );
+
+        await waitFor(() => {
+            expect(result.current.error).toContain('Error fetching schedule');
+        });
+
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                schedule: [
+                    { idEvent: '1', dateEvent: '2020-01-01', strTime: '12:00:00', strStatus: 'Match Finished' }
+                ]
+            })
+        });
+
+        rerender({ id: 'healthy_team' });
+
+        await waitFor(() => {
+            expect(result.current.pastMatchInfo).toHaveLength(1);
+        });
+        expect(result.current.error).toBeNull();
+        expect(result.current.isFallback).toBe(false);
+    });
+
     it('exposes pagination state for past and upcoming matches', async () => {
         // Create 15 past matches to trigger pagination
         const pastMatches = Array.from({ length: 15 }, (_, i) => ({
