@@ -4,14 +4,20 @@
  * This runs at build time or manually to guarantee perfect fuzzy autocomplete.
  */
 /* eslint-disable no-console */
-const { loadEnvFile } = require('node:process');
-loadEnvFile('./.env');
 const fs = require('fs');
+const { loadEnvFile } = require('node:process');
+if (fs.existsSync('./.env')) {
+    loadEnvFile('./.env');
+}
 const path = require('path');
 const https = require('https');
 
 // For paid tier, use .env or hardcode if testing
 const apiKey = process.env.SPORTS_DB_API_KEY;
+if (!apiKey) {
+    console.error("Error: SPORTS_DB_API_KEY is not set. Add it to .env or the environment.");
+    process.exit(1);
+}
 const headers = { 'X-API-KEY': apiKey };
 const DATA_DIR = path.join(__dirname, '../src/data');
 const OUT_FILE = path.join(DATA_DIR, 'teams.json');
@@ -20,7 +26,7 @@ function fetchJson(url, options) {
     return new Promise((resolve, reject) => {
         https.get(url, options, (res) => {
             let data = '';
-            res.on('data', chunk => data += chunk);
+            res.on('data', chunk => { data += chunk; });
             res.on('end', () => {
                 try {
                     resolve(JSON.parse(data));
@@ -47,6 +53,7 @@ async function main() {
     console.log(`Found ${leagues.length} leagues. Fetching teams for each... this may take a minute.`);
 
     let allTeams = [];
+    let failedLeagues = 0;
 
     // Create data dir if missing
     if (!fs.existsSync(DATA_DIR)) {
@@ -61,13 +68,14 @@ async function main() {
         const promises = batch.map(async (league) => {
             const url = `https://www.thesportsdb.com/api/v2/json/list/teams/${encodeURIComponent(league.idLeague)}`;
             const response = await fetchJson(url, { headers });
-            if (response && response.list) {
+            if (response && Array.isArray(response.list)) {
                 return response.list.map(team => ({
                     ...team,
                     strSport: league.strSport,
                     strLeague: league.strLeague,
                 }));
             }
+            failedLeagues += 1;
             return [];
         });
 
@@ -100,6 +108,16 @@ async function main() {
     }
 
     console.log(`\n\nSuccess! Downloaded ${uniqueTeams.length} unique teams.`);
+
+    if (failedLeagues > 0) {
+        console.log(`${failedLeagues} league(s) returned no team list.`);
+        if (!process.argv.includes('--allow-partial')) {
+            console.error("Refusing to overwrite teams.json with partial data. Rerun with --allow-partial to save anyway.");
+            process.exit(1);
+        }
+        console.log("--allow-partial set: saving partial results.");
+    }
+
     fs.writeFileSync(OUT_FILE, JSON.stringify(uniqueTeams), 'utf-8');
     console.log(`Saved to ${OUT_FILE}`);
 }
