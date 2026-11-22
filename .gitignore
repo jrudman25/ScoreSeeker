@@ -26,5 +26,3 @@ yarn-error.log*
 /.next
 /.vscode
 /.swc
-*.md
-!README.md

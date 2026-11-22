@@ -7,7 +7,7 @@ ScoreSeeker allows users to search for sports teams, view their upcoming and pas
 ---
 
 ### Features
-- **Team Search** - Search any team by name, nickname, or abbreviation across 20,000+ teams worldwide
+- **Team Search** - Search teams worldwide by name, nickname, or abbreviation
 - **Match Schedules** - View upcoming and past matches with live scores and other match info
 - **Off-Season Fallback** - Automatically shows the most recent or next season when a team is between seasons
 - **Dynamic Audio** - Generates unique Tone.js musical snippets based on match scores
@@ -28,16 +28,32 @@ The application features secure server-side Next.js API routing to proxy request
 
 **Search Fallback** — The v2 search API has limited partial-name matching (e.g., "Knicks" and "Lakers" return no results). To solve this, a local team index (`src/data/teams.json`) is bundled as a fallback. When the v2 API returns no matches, the route searches this index using substring and short-name matching, ensuring common nicknames always resolve.
 
+### Getting Started
+Requires Node.js 24 (the version used in CI) and a [TheSportsDB](https://www.thesportsdb.com/) API key with v2 access.
+
+```bash
+npm ci
+echo "SPORTS_DB_API_KEY=your_key_here" > .env
+npm run dev
+```
+
+Then open http://localhost:3000.
+
 ### Scripts
 | Script | Purpose |
 |---|---|
 | `npm run dev` | Start the dev server |
 | `npm run lint` | Run ESLint |
 | `npm test` | Run all unit tests |
+| `npm run test:coverage` | Run tests with a coverage report |
 | `npm run build` | Create a production build |
-| `node scripts/build_team_list_v2.js` | Regenerate `src/data/teams.json` from the TheSportsDB API |
+| `npm start` | Serve the production build |
+| `node scripts/build_team_list_v2.js` | Regenerate `src/data/teams.json` from the TheSportsDB API (reads the key from `.env`) |
 
 ### Environment Variables
 | Variable | Description |
 |---|---|
-| `SPORTS_DB_API_KEY` | TheSportsDB API key (required) |
+| `SPORTS_DB_API_KEY` | TheSportsDB API key (required, server-side only) |
+
+### License
+See [LICENSE](LICENSE).
