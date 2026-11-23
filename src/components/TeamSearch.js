@@ -16,10 +16,12 @@ const TeamSearch = () => {
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
+        if (!inputValue) {
+            fetchTeams('');
+            return undefined;
+        }
         const timeoutId = setTimeout(() => {
-            if (inputValue) {
-                fetchTeams(inputValue);
-            }
+            fetchTeams(inputValue);
         }, 500); // Debounce to prevent spamming the API on every keystroke
         return () => clearTimeout(timeoutId);
     }, [inputValue, fetchTeams]);
@@ -31,13 +33,19 @@ const TeamSearch = () => {
                 getOptionLabel={(option) => `${option.strTeam} (${option.strSport} - ${option.strLeague})`}
                 loading={fetchingOptions}
                 filterOptions={(x) => x} // Disable built-in filtering, API handles it
+                value={null}
+                inputValue={inputValue}
+                blurOnSelect
                 onChange={(event, newValue) => {
                     if (newValue) {
+                        setInputValue('');
                         router.push(`/team/${newValue.idTeam}`);
                     }
                 }}
-                onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue);
+                onInputChange={(event, newInputValue, reason) => {
+                    if (reason !== 'reset') {
+                        setInputValue(newInputValue);
+                    }
                 }}
                 renderInput={(params) => (
                     <TextField

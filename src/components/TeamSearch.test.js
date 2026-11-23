@@ -71,6 +71,26 @@ describe('TeamSearch Component', () => {
         expect(mockPush).toHaveBeenCalledWith('/team/1');
     });
 
+    it('clears the input and previous results after a team is selected', async () => {
+        const user = userEvent.setup();
+        const teamOptions = [
+            { idTeam: '1', strTeam: 'LA Lakers', strSport: 'Basketball', strLeague: 'NBA' },
+        ];
+        fetch.mockResolvedValueOnce(searchResponse(teamOptions));
+
+        render(<TeamSearch />);
+
+        const input = screen.getByLabelText('Search for a team...');
+        await user.type(input, 'Lakers');
+        await user.click(await screen.findByText('LA Lakers (Basketball - NBA)'));
+
+        expect(input).toHaveValue('');
+
+        await user.click(input);
+        await user.keyboard('{ArrowDown}');
+        expect(screen.queryByText('LA Lakers (Basketball - NBA)')).not.toBeInTheDocument();
+    });
+
     it('displays a search error under the input when fetching fails', async () => {
         const user = userEvent.setup();
         fetch.mockRejectedValueOnce(new Error('Network down'));
