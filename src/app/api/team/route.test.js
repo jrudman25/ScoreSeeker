@@ -6,6 +6,8 @@ import { GET } from './route';
 // Mock global fetch
 global.fetch = jest.fn();
 
+const CDN_HEADER = 'Netlify-CDN-Cache-Control';
+
 // Mock the local team index
 jest.mock('../../../data/teams.json', () => [
     { idTeam: '134860', strTeam: 'New York Knicks', strTeamShort: 'NYK', strLeague: 'NBA', strSport: 'Basketball' },
@@ -25,12 +27,11 @@ describe('/api/team Route (v2)', () => {
         return { url: `http://localhost:3000/api/team${params}` };
     }
 
-    // --- Search mode tests ---
-
     it('returns empty array for queries shorter than 2 characters', async () => {
         const response = await GET(createRequest('?t=A'));
         const data = await response.json();
         expect(data.search).toEqual([]);
+        expect(fetch).not.toHaveBeenCalled();
     });
 
     it('returns empty array when no query is provided', async () => {
@@ -39,7 +40,14 @@ describe('/api/team Route (v2)', () => {
         expect(data.search).toEqual([]);
     });
 
-    it('returns matching teams for a valid search query', async () => {
+    it('ignores the id param now that lookup mode is gone', async () => {
+        const response = await GET(createRequest('?id=1'));
+        const data = await response.json();
+        expect(data.search).toEqual([]);
+        expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('returns matching teams and sets the CDN cache header on success', async () => {
         const mockSearch = {
             search: [
                 { idTeam: '100', strTeam: 'St. Louis Cardinals', strSport: 'Baseball' },
@@ -52,11 +60,8 @@ describe('/api/team Route (v2)', () => {
         const response = await GET(createRequest('?t=Cardinals'));
         const data = await response.json();
 
-        expect(fetch).toHaveBeenCalledWith(
-            expect.stringContaining('/api/v2/json/search/team/Cardinals'),
-            expect.objectContaining({ headers: { 'X-API-KEY': 'test_key' } })
-        );
         expect(data.search).toHaveLength(2);
+        expect(response.headers.get(CDN_HEADER)).toBe('public, durable, s-maxage=3600, stale-while-revalidate=86400');
     });
 
     it('falls back to local index when v2 search returns no results', async () => {
@@ -66,6 +71,7 @@ describe('/api/team Route (v2)', () => {
         const data = await response.json();
         expect(data.search).toHaveLength(2);
         expect(data.search[0].strTeam).toBe('New York Knicks');
+        expect(response.headers.get(CDN_HEADER)).toBeTruthy();
     });
 
     it('matches local index by team short name', async () => {
@@ -92,84 +98,20 @@ describe('/api/team Route (v2)', () => {
         const data = await response.json();
         expect(response.status).toBe(500);
         expect(data.error).toBe('Failed to search teams');
+        expect(response.headers.get(CDN_HEADER)).toBeNull();
     });
 
-    // --- Lookup mode tests ---
-
-    it('fetches team profile when id param is provided', async () => {
-        const mockLookup = {
-            lookup: [{ idTeam: '100', strTeam: 'Cardinals', strDescriptionEN: 'Full details' }]
-        };
-
-        fetch.mockResolvedValueOnce({ ok: true, json: async () => mockLookup });
-
-        const response = await GET(createRequest('?id=100'));
-        const data = await response.json();
-
-        expect(fetch).toHaveBeenCalledWith(
-            expect.stringContaining('/api/v2/json/lookup/team/100'),
-            expect.objectContaining({ headers: { 'X-API-KEY': 'test_key' } })
-        );
-        expect(data.lookup[0].strDescriptionEN).toBe('Full details');
-    });
-
-    it('returns empty array when lookup finds no team', async () => {
-        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ lookup: null }) });
-
-        const response = await GET(createRequest('?id=99999'));
-        const data = await response.json();
-        expect(data.lookup).toEqual([]);
-    });
-
-    it('returns 500 when lookup API call fails', async () => {
-        fetch.mockRejectedValueOnce(new Error('API down'));
-
-        const response = await GET(createRequest('?id=100'));
-        const data = await response.json();
-        expect(response.status).toBe(500);
-        expect(data.error).toBe('Failed to lookup team details');
-    });
-
-    // --- Validation / upstream status tests ---
-
-    it('returns 400 and does not fetch for a non-numeric id', async () => {
-        const response = await GET(createRequest('?id=abc'));
-        const data = await response.json();
-        expect(response.status).toBe(400);
-        expect(data.error).toBe('Invalid team ID');
-        expect(fetch).not.toHaveBeenCalled();
-    });
-
-    it('returns 400 and does not fetch for a path traversal id', async () => {
-        const response = await GET(createRequest(`?id=${encodeURIComponent('../../all/leagues')}`));
-        const data = await response.json();
-        expect(response.status).toBe(400);
-        expect(data.error).toBe('Invalid team ID');
-        expect(fetch).not.toHaveBeenCalled();
-    });
-
-    it('returns 500 and does not fetch when the API key is missing', async () => {
+    it('returns 500 without a cache header when the API key is missing', async () => {
         delete process.env.SPORTS_DB_API_KEY;
         const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        const response = await GET(createRequest('?id=100'));
+        const response = await GET(createRequest('?t=Cardinals'));
         const data = await response.json();
 
         expect(response.status).toBe(500);
         expect(data.error).toBe('Server configuration error');
+        expect(response.headers.get(CDN_HEADER)).toBeNull();
         expect(fetch).not.toHaveBeenCalled();
-        consoleSpy.mockRestore();
-    });
-
-    it('returns 502 when the lookup upstream responds non-ok', async () => {
-        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        fetch.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({}) });
-
-        const response = await GET(createRequest('?id=100'));
-        const data = await response.json();
-
-        expect(response.status).toBe(502);
-        expect(data.error).toBe('Upstream service error');
         consoleSpy.mockRestore();
     });
 
@@ -186,7 +128,7 @@ describe('/api/team Route (v2)', () => {
         consoleSpy.mockRestore();
     });
 
-    it('returns 502 when search upstream is non-ok and the local index has no match', async () => {
+    it('returns 502 without a cache header when upstream is non-ok and the local index misses', async () => {
         const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         fetch.mockResolvedValueOnce({ ok: false, status: 503, json: async () => ({}) });
 
@@ -195,6 +137,7 @@ describe('/api/team Route (v2)', () => {
 
         expect(response.status).toBe(502);
         expect(data.error).toBe('Upstream service error');
+        expect(response.headers.get(CDN_HEADER)).toBeNull();
         consoleSpy.mockRestore();
     });
 });

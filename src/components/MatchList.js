@@ -61,7 +61,7 @@ const resultColors = {
     D: { bg: '#fff8e1', color: '#f57f17', darkBg: '#3a351b', darkColor: '#ffca28' },
 };
 
-const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode, disableAudio, playingMatchId, onPlayAudio, page, pageCount, onPageChange, selectedTeamName }) => {
+const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, disableAudio, playingMatchId, onPlayAudio, page, pageCount, onPageChange, selectedTeamName }) => {
     // Playable rows render as buttons so they are focusable and activate on Enter/Space
     const RowComponent = disableAudio ? ListItem : ListItemButton;
     return (
@@ -83,21 +83,34 @@ const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode
                             <RowComponent key={match.idEvent}
                                 divider
                                 onClick={disableAudio ? undefined : () => onPlayAudio(match)}
-                                sx={{
+                                sx={(theme) => ({
                                     cursor: disableAudio ? 'default' : 'pointer',
                                     transition: 'all 0.2s ease-in-out',
-                                    backgroundColor: isPlaying ? (darkMode ? '#1e3a2f' : '#e8f5e9') : 'transparent',
+                                    backgroundColor: isPlaying ? '#e8f5e9' : 'transparent',
                                     '&:hover': disableAudio ? {} : {
-                                        backgroundColor: isPlaying ? (darkMode ? '#1e3a2f' : '#e8f5e9') : (darkMode ? '#333' : '#f4f8fc'),
+                                        backgroundColor: isPlaying ? '#e8f5e9' : '#f4f8fc',
                                         transform: 'translateX(6px)'
                                     },
                                     ...(disableAudio ? {} : {
                                         '&:active': {
-                                            backgroundColor: darkMode ? '#555' : '#e0e0e0',
+                                            backgroundColor: '#e0e0e0',
                                             transform: 'translateX(2px)'
                                         }
+                                    }),
+                                    ...theme.applyStyles('dark', {
+                                        backgroundColor: isPlaying ? '#1e3a2f' : 'transparent',
+                                        '&:hover': disableAudio ? {} : {
+                                            backgroundColor: isPlaying ? '#1e3a2f' : '#333',
+                                            transform: 'translateX(6px)'
+                                        },
+                                        ...(disableAudio ? {} : {
+                                            '&:active': {
+                                                backgroundColor: '#555',
+                                                transform: 'translateX(2px)'
+                                            }
+                                        })
                                     })
-                                }}>
+                                })}>
                                 <ListItemText
                                     primary={
                                         <Box sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
@@ -132,14 +145,15 @@ const MatchList = ({ title, matches, convertTime, isScoreValid, isLive, darkMode
                                                     {result && (
                                                         <Typography
                                                             component="span"
-                                                            sx={{
+                                                            sx={(theme) => ({
                                                                 fontWeight: 'bold',
                                                                 fontSize: '0.95rem',
-                                                                color: darkMode
-                                                                    ? resultColors[result].darkColor
-                                                                    : resultColors[result].color,
+                                                                color: resultColors[result].color,
                                                                 minWidth: 18,
-                                                            }}
+                                                                ...theme.applyStyles('dark', {
+                                                                    color: resultColors[result].darkColor,
+                                                                }),
+                                                            })}
                                                         >
                                                             {result}
                                                         </Typography>

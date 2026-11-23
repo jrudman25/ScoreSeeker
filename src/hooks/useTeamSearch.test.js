@@ -5,17 +5,16 @@ import { useTeamSearch } from './useTeamSearch';
 // Mock global fetch
 global.fetch = jest.fn();
 
-describe('useTeamSearch Hook (v2)', () => {
+describe('useTeamSearch Hook (autocomplete)', () => {
     beforeEach(() => {
         fetch.mockClear();
     });
 
     it('initializes with empty states', () => {
         const { result } = renderHook(() => useTeamSearch());
-        expect(result.current.teamSearchResult).toBeNull();
         expect(result.current.teamOptions).toEqual([]);
+        expect(result.current.error).toBeNull();
         expect(result.current.fetchingOptions).toBe(false);
-        expect(result.current.loading).toBe(false);
     });
 
     it('fetches teams via v2 search and populates options', async () => {
@@ -42,44 +41,37 @@ describe('useTeamSearch Hook (v2)', () => {
         expect(result.current.teamOptions[0].strTeam).toBe('Cardinals');
     });
 
-    it('handles team selection via v2 lookup', async () => {
-        const fullProfile = {
-            lookup: [
-                { idTeam: '1', strTeam: 'Cardinals', strDescriptionEN: 'Full rich details' }
-            ]
-        };
-
+    it('clears options for queries shorter than 2 characters', async () => {
         fetch.mockResolvedValueOnce({
             ok: true,
-            json: async () => fullProfile
+            json: async () => ({ search: [{ idTeam: '1', strTeam: 'Cardinals' }] })
         });
 
         const { result } = renderHook(() => useTeamSearch());
 
         await act(async () => {
-            await result.current.searchTeam({ idTeam: '1', strTeam: 'Cardinals' });
+            await result.current.fetchTeams('Cardinals');
         });
+        expect(result.current.teamOptions).toHaveLength(1);
 
-        expect(fetch).toHaveBeenCalledWith('/api/team?id=1');
-        expect(result.current.teamSearchResult.strDescriptionEN).toBe('Full rich details');
+        await act(async () => {
+            await result.current.fetchTeams('C');
+        });
         expect(result.current.teamOptions).toEqual([]);
+        expect(fetch).toHaveBeenCalledTimes(1);
     });
 
-    it('sets an error when the team lookup responds non-ok', async () => {
-        fetch.mockResolvedValueOnce({
-            ok: false,
-            status: 502,
-            json: async () => ({ error: 'Upstream service error' })
-        });
+    it('sets an error when the search request rejects', async () => {
+        fetch.mockRejectedValueOnce(new Error('Network down'));
 
         const { result } = renderHook(() => useTeamSearch());
 
         await act(async () => {
-            await result.current.searchTeam({ idTeam: '1', strTeam: 'Cardinals' });
+            await result.current.fetchTeams('Cardinals');
         });
 
-        expect(result.current.error).toBe('Failed to fetch team details');
-        expect(result.current.teamSearchResult).toBeNull();
+        expect(result.current.error).toContain('Error searching for teams');
+        expect(result.current.fetchingOptions).toBe(false);
     });
 
     it('ignores stale autocomplete responses that resolve after a newer request', async () => {

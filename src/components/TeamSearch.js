@@ -1,12 +1,18 @@
+'use client';
+
 /**
  * TeamSearch.js
- * Search for teams with autocomplete dropdown
+ * Search for teams with autocomplete dropdown; selection navigates to /team/[id]
  * @version 2026.03.23
  */
 import React, { useState, useEffect } from 'react';
-import { Autocomplete, TextField, Box, CircularProgress } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { Autocomplete, TextField, Box, CircularProgress, Typography } from '@mui/material';
+import { useTeamSearch } from '../hooks/useTeamSearch';
 
-const TeamSearch = ({ onSearch, teamOptions, loading, fetchTeams }) => {
+const TeamSearch = () => {
+    const router = useRouter();
+    const { teamOptions, fetchingOptions, error, fetchTeams } = useTeamSearch();
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
@@ -23,11 +29,11 @@ const TeamSearch = ({ onSearch, teamOptions, loading, fetchTeams }) => {
             <Autocomplete
                 options={teamOptions}
                 getOptionLabel={(option) => `${option.strTeam} (${option.strSport} - ${option.strLeague})`}
-                loading={loading}
+                loading={fetchingOptions}
                 filterOptions={(x) => x} // Disable built-in filtering, API handles it
                 onChange={(event, newValue) => {
                     if (newValue) {
-                        onSearch(newValue);
+                        router.push(`/team/${newValue.idTeam}`);
                     }
                 }}
                 onInputChange={(event, newInputValue) => {
@@ -43,7 +49,7 @@ const TeamSearch = ({ onSearch, teamOptions, loading, fetchTeams }) => {
                                 ...params.InputProps,
                                 endAdornment: (
                                     <React.Fragment>
-                                        {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {fetchingOptions ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
                                     </React.Fragment>
                                 ),
@@ -52,6 +58,11 @@ const TeamSearch = ({ onSearch, teamOptions, loading, fetchTeams }) => {
                     />
                 )}
             />
+            {error && (
+                <Typography color="error" variant="body1" sx={{ mt: 1 }}>
+                    {error}
+                </Typography>
+            )}
         </Box>
     );
 };

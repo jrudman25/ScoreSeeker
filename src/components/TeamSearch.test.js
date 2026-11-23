@@ -1,84 +1,87 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/navigation';
 import TeamSearch from './TeamSearch';
 
-describe('TeamSearch Component', () => {
-    const mockOnSearch = jest.fn();
-    const mockFetchTeams = jest.fn();
+// Mock global fetch
+global.fetch = jest.fn();
 
-    const defaultProps = {
-        onSearch: mockOnSearch,
-        teamOptions: [],
-        loading: false,
-        fetchTeams: mockFetchTeams,
-    };
+jest.mock('next/navigation', () => ({
+    useRouter: jest.fn(),
+}));
+
+describe('TeamSearch Component', () => {
+    const mockPush = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.useFakeTimers();
+        useRouter.mockReturnValue({ push: mockPush });
     });
 
-    afterEach(() => {
-        jest.useRealTimers();
+    const searchResponse = (teams) => ({
+        ok: true,
+        json: async () => ({ search: teams }),
     });
 
     it('renders the search input with correct label', () => {
-        render(<TeamSearch {...defaultProps} />);
+        render(<TeamSearch />);
         expect(screen.getByLabelText('Search for a team...')).toBeInTheDocument();
     });
 
-    it('calls fetchTeams after 500ms debounce when input changes', async () => {
-        jest.useRealTimers(); // Use real timers for userEvent
+    it('fetches matching teams after the debounce when input changes', async () => {
+        fetch.mockResolvedValueOnce(searchResponse([]));
 
-        render(<TeamSearch {...defaultProps} />);
+        render(<TeamSearch />);
         const input = screen.getByLabelText('Search for a team...');
 
         await userEvent.type(input, 'Lakers');
 
-        // fetchTeams should be called after the debounce
         await waitFor(() => {
-            expect(mockFetchTeams).toHaveBeenCalledWith('Lakers');
+            expect(fetch).toHaveBeenCalledWith('/api/team?t=Lakers');
         }, { timeout: 2000 });
     });
 
-    it('does NOT call fetchTeams immediately on keystroke', () => {
-        render(<TeamSearch {...defaultProps} />);
+    it('does NOT fetch immediately on keystroke', () => {
+        render(<TeamSearch />);
         const input = screen.getByLabelText('Search for a team...');
 
         fireEvent.change(input, { target: { value: 'La' } });
 
         // Should not have called yet (debounce hasn't fired)
-        expect(mockFetchTeams).not.toHaveBeenCalled();
+        expect(fetch).not.toHaveBeenCalled();
     });
 
-    it('shows loading spinner when loading prop is true', () => {
-        render(<TeamSearch {...defaultProps} loading={true} />);
-        expect(screen.getByRole('progressbar')).toBeInTheDocument();
-    });
-
-    it('does not show loading spinner when loading is false', () => {
-        render(<TeamSearch {...defaultProps} loading={false} />);
-        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-    });
-
-    it('calls onSearch when an option is selected', async () => {
-        jest.useRealTimers();
-
+    it('navigates to the team page when an option is selected', async () => {
+        const user = userEvent.setup();
         const teamOptions = [
             { idTeam: '1', strTeam: 'LA Lakers', strSport: 'Basketball', strLeague: 'NBA' },
             { idTeam: '2', strTeam: 'LA Clippers', strSport: 'Basketball', strLeague: 'NBA' },
         ];
+        fetch.mockResolvedValueOnce(searchResponse(teamOptions));
 
-        render(<TeamSearch {...defaultProps} teamOptions={teamOptions} />);
+        render(<TeamSearch />);
 
         const input = screen.getByLabelText('Search for a team...');
-        await userEvent.click(input);
+        await user.type(input, 'Lakers');
 
-        // The options should be visible in the dropdown
         const option = await screen.findByText('LA Lakers (Basketball - NBA)');
-        await userEvent.click(option);
+        await user.click(option);
 
-        expect(mockOnSearch).toHaveBeenCalledWith(teamOptions[0]);
+        expect(mockPush).toHaveBeenCalledWith('/team/1');
+    });
+
+    it('displays a search error under the input when fetching fails', async () => {
+        const user = userEvent.setup();
+        fetch.mockRejectedValueOnce(new Error('Network down'));
+
+        render(<TeamSearch />);
+        const input = screen.getByLabelText('Search for a team...');
+
+        await user.type(input, 'Lakers');
+
+        await waitFor(() => {
+            expect(screen.getByText(/Error searching for teams/)).toBeInTheDocument();
+        }, { timeout: 2000 });
     });
 });

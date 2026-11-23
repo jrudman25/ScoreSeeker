@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * TeamDetails.js
  * Fetch team details

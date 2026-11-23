@@ -42,7 +42,6 @@ describe('MatchList Component', () => {
         convertTime: mockConvertTime,
         isScoreValid: mockIsScoreValid,
         isLive: mockIsLive,
-        darkMode: false,
         disableAudio: false,
         playingMatchId: null,
         onPlayAudio: mockOnPlayAudio,

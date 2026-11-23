@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * ErrorBoundary.js
  * Catches unhandled React rendering errors and displays a user-friendly fallback UI

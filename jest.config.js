@@ -9,6 +9,11 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
+  moduleNameMapper: {
+    // 'server-only' is a Next.js marker package resolved by its own bundler;
+    // map it to Next's compiled empty stub for Jest.
+    '^server-only$': '<rootDir>/node_modules/next/dist/compiled/server-only/empty.js',
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

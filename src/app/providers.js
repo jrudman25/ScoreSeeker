@@ -1,16 +1,18 @@
-"use client";
+'use client';
 
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from '../theme';
+import { TimeZoneProvider } from '../components/TimeZoneProvider';
 
 export default function Providers({ children }) {
     return (
-        <NextThemesProvider
-            attribute="data-theme"
-            defaultTheme="light"
-            storageKey="scoreseeker_theme"
-            themes={['light', 'dark']}
-        >
-            {children}
-        </NextThemesProvider>
+        <AppRouterCacheProvider>
+            <ThemeProvider theme={theme} modeStorageKey="scoreseeker_theme" defaultMode="light">
+                <CssBaseline />
+                <TimeZoneProvider>{children}</TimeZoneProvider>
+            </ThemeProvider>
+        </AppRouterCacheProvider>
     );
 }

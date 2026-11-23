@@ -1,86 +1,29 @@
 import { NextResponse } from 'next/server';
-import teamIndex from '../../../data/teams.json';
-import { isValidTeamId } from '../../../utils/isValidTeamId';
+import { searchTeams, UpstreamError, ConfigError } from '../../../lib/sportsDb';
 
-const API_BASE = 'https://www.thesportsdb.com/api/v2/json';
-
-/**
- * Search the local team index as a fallback when the v2 API returns no results.
- * Matches against full team name (substring) and team short name (exact, case-insensitive).
- */
-function searchLocalIndex(query) {
-    const q = query.toLowerCase();
-    return teamIndex.filter(team => {
-        const name = (team.strTeam || '').toLowerCase();
-        const short = (team.strTeamShort || '').toLowerCase();
-        return name.includes(q) || short === q;
-    });
-}
+const CDN_CACHE_HEADER = 'public, durable, s-maxage=3600, stale-while-revalidate=86400';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('t')?.trim() || '';
-    const id = searchParams.get('id');
 
-    if (id && !isValidTeamId(id)) {
-        return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
-    }
-
-    const apiKey = process.env.SPORTS_DB_API_KEY;
-    if (!apiKey) {
-        console.error('SPORTS_DB_API_KEY is not configured');
-        return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
-    }
-    const headers = { 'X-API-KEY': apiKey };
-
-    // Lookup mode: fetch full team profile by ID
-    if (id) {
-        try {
-            const res = await fetch(`${API_BASE}/lookup/team/${encodeURIComponent(id)}`, { headers });
-            if (!res.ok) {
-                console.error(`Upstream /lookup/team/${encodeURIComponent(id)} returned status ${res.status}`);
-                return NextResponse.json({ error: 'Upstream service error' }, { status: 502 });
-            }
-            const data = await res.json();
-
-            if (data.lookup && data.lookup.length > 0) {
-                return NextResponse.json({ lookup: data.lookup });
-            }
-            return NextResponse.json({ lookup: [] });
-        } catch (_e) {
-            return NextResponse.json({ error: 'Failed to lookup team details' }, { status: 500 });
-        }
-    }
-
-    // Search mode: query the v2 search endpoint directly
     if (!query || query.length < 2) {
         return NextResponse.json({ search: [] });
     }
 
     try {
-        const res = await fetch(`${API_BASE}/search/team/${encodeURIComponent(query)}`, { headers });
-        if (!res.ok) {
-            console.error(`Upstream /search/team/${encodeURIComponent(query)} returned status ${res.status}`);
-            const localResults = searchLocalIndex(query);
-            if (localResults.length > 0) {
-                return NextResponse.json({ search: localResults });
-            }
+        const search = await searchTeams(query);
+        return NextResponse.json(
+            { search },
+            { headers: { 'Netlify-CDN-Cache-Control': CDN_CACHE_HEADER } }
+        );
+    } catch (err) {
+        if (err instanceof ConfigError) {
+            return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+        }
+        if (err instanceof UpstreamError) {
             return NextResponse.json({ error: 'Upstream service error' }, { status: 502 });
         }
-        const data = await res.json();
-
-        if (data.search && data.search.length > 0) {
-            return NextResponse.json({ search: data.search });
-        }
-
-        // v2 returned no results — fall back to local team index
-        const localResults = searchLocalIndex(query);
-        if (localResults.length > 0) {
-            return NextResponse.json({ search: localResults });
-        }
-
-        return NextResponse.json({ search: [] });
-    } catch (_e) {
         return NextResponse.json({ error: 'Failed to search teams' }, { status: 500 });
     }
 }
