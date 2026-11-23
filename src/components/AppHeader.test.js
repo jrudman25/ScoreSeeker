@@ -44,15 +44,16 @@ describe('AppHeader Component', () => {
     });
 
     it('updates the time zone context and storage when a zone is selected', async () => {
+        localStorage.setItem('scoreseeker_timeZone', 'America/New_York');
         const user = userEvent.setup();
         renderHeader();
 
         await waitFor(() => {
-            expect(screen.getByTestId('tz').textContent).not.toBe('none');
+            expect(screen.getByTestId('tz').textContent).toBe('America/New_York');
         });
 
         await user.click(screen.getByLabelText('Settings'));
-        await user.click(screen.getByText('UTC'));
+        await user.click(screen.getByRole('menuitem', { name: /UTC$/ }));
 
         await waitFor(() => {
             expect(screen.getByTestId('tz').textContent).toBe('UTC');
