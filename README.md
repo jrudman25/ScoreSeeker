@@ -11,20 +11,21 @@ ScoreSeeker allows users to search for sports teams, view their upcoming and pas
 - **Match Schedules** - View upcoming and past matches with live scores and other match info
 - **Off-Season Fallback** - Automatically shows the most recent or next season when a team is between seasons
 - **Dynamic Audio** - Generates unique Tone.js musical snippets based on match scores
-- **Dark Mode** - Flash-free theme persistence powered by `next-themes`
+- **Team Pages** - Shareable `/team/<id>` pages with per-team titles, link previews, and a sitemap of major-league teams
+- **Dark Mode** - Flash-free theme persistence using MUI color schemes
 
 ### Tech Stack
 - **Framework:** Next.js
 - **UI:** React, MUI, Emotion
 - **Audio Synthesis:** Tone.js
 - **Data Source:** TheSportsDB API (v2)
-- **Theme:** next-themes
+- **Theme:** MUI color schemes (CSS variables)
 - **Testing:** Jest
 - **CI:** GitHub Actions (lint, test, build on pushes to `main` and pull requests)
 - **Deployment:** Netlify
 
 ### Architecture
-The application features secure server-side Next.js API routing to proxy requests to TheSportsDB, keeping API keys hidden from the frontend client. The UI components leverage custom React hooks for efficient, memoized data fetching and localized timezone formatting without unnecessary network requests.
+All TheSportsDB requests run on the server, so the API key never reaches the browser. Each team has its own page (`/team/<id>`), rendered on the server and regenerated at most once a minute (incremental static regeneration). Search results and team profiles are cached for longer, which keeps upstream API usage low. Match times are shown in the visitor's chosen time zone in the browser.
 
 **Search Fallback** — The v2 search API has limited partial-name matching (e.g., "Knicks" and "Lakers" return no results). To solve this, a local team index (`src/data/teams.json`) is bundled as a fallback. When the v2 API returns no matches, the route searches this index using substring and short-name matching, ensuring common nicknames always resolve.
 
